@@ -5,3 +5,4 @@
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('change-status') }}'><i class='nav-icon la la-question'></i> Change Statuses</a></li>
 
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('change') }}'><i class='nav-icon la la-question'></i> Changes</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('user') }}'><i class='nav-icon la la-question'></i> Users</a></li>

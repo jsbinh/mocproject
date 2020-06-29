@@ -4,21 +4,20 @@ namespace Framework\Http\Controllers\Admin;
 
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Framework\Http\Requests\ChangeStatusRequest;
+use Framework\Http\Requests\UserRequest;
 
 /**
- * Class ChangeStatusCrudController
+ * Class UserCrudController
  * @package Framework\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class ChangeStatusCrudController extends CrudController
+class UserCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -27,14 +26,9 @@ class ChangeStatusCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\Framework\Models\ChangeStatus::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/change-status');
-        CRUD::setEntityNameStrings('change status', 'change statuses');
-    }
-
-    public function fetchName()
-    {
-        return $this->fetch(\Framework\Models\ChangeStatus::class);
+        CRUD::setModel(\Framework\User::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/user');
+        CRUD::setEntityNameStrings('user', 'users');
     }
 
     /**
@@ -62,7 +56,7 @@ class ChangeStatusCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(ChangeStatusRequest::class);
+        CRUD::setValidation(UserRequest::class);
 
         CRUD::setFromDb(); // fields
 

@@ -27,6 +27,8 @@ class ChangeRequest extends FormRequest
     {
         return [
             // 'name' => 'required|min:5|max:255'
+            'title' => 'required|min:5|max:255',
+            'status_id' => 'required',
         ];
     }
 

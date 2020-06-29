@@ -6,10 +6,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
 
 class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
     use Notifiable;
+    use CrudTrait;
 
     /**
      * The attributes that are mass assignable.

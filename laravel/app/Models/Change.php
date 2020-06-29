@@ -16,10 +16,10 @@ class Change extends Model
     */
 
     protected $table = 'changes';
-    // protected $primaryKey = 'id';
-    // public $timestamps = false;
+    protected $primaryKey = 'id';
+    public $timestamps = true;
     protected $guarded = ['id'];
-    // protected $fillable = [];
+    // protected $fillable = ['title', 'description', 'status_id', 'approver_id', 'assignee_id'];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -34,6 +34,21 @@ class Change extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+
+    public function change_status()
+    {
+        return $this->belongsTo('Framework\Models\ChangeStatus', 'status_id');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo('Framework\User', 'approver_id');
+    }
+
+    public function assignee()
+    {
+        return $this->belongsTo('Framework\User', 'assigness_id');
+    }
 
     /*
     |--------------------------------------------------------------------------

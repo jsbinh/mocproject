@@ -92,7 +92,7 @@ class ChangeCrudController extends CrudController
      * @see https://backpackforlaravel.com/docs/crud-operation-create
      * @return void
      */
-    protected function setupCreateOperation()
+    protected function setupCreateOperation($update = false)
     {
         CRUD::setValidation(ChangeRequest::class);
 
@@ -103,6 +103,13 @@ class ChangeCrudController extends CrudController
          * - CRUD::field('price')->type('number');
          * - CRUD::addField(['name' => 'price', 'type' => 'number']));
          */
+
+        // CRUD::addField([ // Text
+        //     'name'  => 'id',
+        //     'label' => 'Change ID',
+        //     'type'  => 'text',
+        //     'attributes'=> ['disabled' => 'disabled']
+        // ]);
 
         CRUD::addField([ // Text
             'name'  => 'title',
@@ -130,7 +137,9 @@ class ChangeCrudController extends CrudController
             //     'class' => 'form-group col-md-6'
             //   ], // extra HTML attributes for the field wrapper - mostly for resizing fields
             // 'tab' => 'Basic Info',
-        ]);
+        ]
+            //+ ($update ? [] : ['attributes'=> ['readonly'=>'readonly',]])
+        );
 
         CRUD::addField([  // Select2
             'label'     => 'Approver',
@@ -147,7 +156,8 @@ class ChangeCrudController extends CrudController
             //     'class' => 'form-group col-md-6'
             //   ], // extra HTML attributes for the field wrapper - mostly for resizing fields
             // 'tab' => 'Basic Info',
-            //'readonly'=>'readonly',
+            // 'readonly'=>'readonly',
+            'attributes'=> ['disabled' => 'disabled']
         ]);
 
         CRUD::addField([  // Select2
@@ -177,7 +187,7 @@ class ChangeCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
-        $this->setupCreateOperation();
+        $this->setupCreateOperation(true);
     }
 
     public function setupShowOperation()

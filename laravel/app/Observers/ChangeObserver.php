@@ -5,6 +5,8 @@ namespace Framework\Observers;
 use Framework\Models\Change;
 use Framework\Models\ChangeStatus;
 use Framework\User;
+use Framework\Libraries\Camunda;
+use Illuminate\Support\Arr;
 use Log;
 
 class ChangeObserver
@@ -31,7 +33,17 @@ class ChangeObserver
 
         $data = $this->mapData($data);
 
-        Log::info('change created', [$data]);
+        //
+        $camunda = Camunda::startProcess($data);
+        $task = Camunda::getTask($camunda['id']);
+
+        (new Change())->where('id', $data['id'])
+                      ->update([
+                          'wf_instance_id' => $camunda['id'],
+                          'wf_task_id' => Arr::get($task, '0.id', null)
+                      ]);
+
+        Log::info('change created', [$data, $camunda, $task]);
     }
 
     /**
@@ -54,7 +66,39 @@ class ChangeObserver
         $data = $change->toArray();
         $data = $this->mapData($data);
 
-        Log::info('change updated', [$data]);
+        Camunda::completeTask($data);
+        $task = Camunda::getTask($data['wf_instance_id']);
+
+        Log::info('change updated -- task', [$task]);
+
+        // task ended
+        if (empty($task)) return;
+
+        $variables = Camunda::getTaskVariables($taskId = $task[0]['id']);
+        $decisionValue = Arr::get($variables, 'decision.value');
+
+        Log::info('change updated -- vars', [$variables, $decisionValue]);
+
+        // variables don't need to be updated
+        if (empty($decisionValue)) return;
+
+        $update = [];
+        if ($decisionValue['next_status'] ?? null) {
+            $update['status_id'] = (new ChangeStatus())->where('name', $decisionValue['next_status'])->first()->id;
+        }
+        if ($decisionValue['next_approver'] ?? null) {
+            $update['approver_id'] = (new User())->where('email', $decisionValue['next_approver'])->first()->id;
+        }
+        if ($decisionValue['next_action'] ?? null == 'send_approval_mail') {
+            Log::info('SEND APPROVAL MAIL');
+        }
+
+        (new Change())->where('id', $data['id'])
+                      ->update([
+                          'wf_task_id' => $taskId
+                      ] + $update);
+
+        Log::info('change updated', [$data, $update]);
     }
 
     protected function mapData($data)

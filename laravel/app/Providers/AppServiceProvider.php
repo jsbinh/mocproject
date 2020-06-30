@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Framework\Providers\TransactionServiceProvider;
 
+use Framework\Models\Change;
+use Framework\Observers\ChangeObserver;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -18,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
         //
         // View::share('assetDir', env('APP_ENV') == 'production' ? 'build/' : '');
         // View::share('assetPath', env('APP_ENV') == 'production' ? 'mix' : 'asset');
+        Change::observe(ChangeObserver::class);
     }
 
     /**

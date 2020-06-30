@@ -47,7 +47,7 @@ class Change extends Model
 
     public function assignee()
     {
-        return $this->belongsTo('Framework\User', 'assigness_id');
+        return $this->belongsTo('Framework\User', 'assignee_id');
     }
 
     /*

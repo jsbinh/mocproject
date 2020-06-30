@@ -7,7 +7,8 @@ use Framework\Models\ChangeStatus;
 use Framework\User;
 use Framework\Libraries\Camunda;
 use Illuminate\Support\Arr;
-use Log;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ChangeObserver
 {
@@ -90,7 +91,15 @@ class ChangeObserver
             $update['approver_id'] = (new User())->where('email', $decisionValue['next_approver'])->first()->id;
         }
         if ($decisionValue['next_action'] ?? null == 'send_approval_mail') {
-            Log::info('SEND APPROVAL MAIL');
+            // Log::info('SEND APPROVAL MAIL');
+            Mail::send(
+                'approval-mail',
+                ['change_id' => $data['id']],
+                function ($message) use ($decisionValue) {
+                    $message->to($decisionValue['next_approver'])
+                            ->subject('Approval Mail');
+                }
+            );
         }
 
         (new Change())->where('id', $data['id'])

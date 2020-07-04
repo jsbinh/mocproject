@@ -111,6 +111,8 @@ class ChangeCrudController extends CrudController
         //     'attributes'=> ['disabled' => 'disabled']
         // ]);
 
+        $entry = $this->crud->getCurrentEntry();
+
         CRUD::addField([ // Text
             'name'  => 'title',
             'label' => 'Title',
@@ -137,6 +139,13 @@ class ChangeCrudController extends CrudController
             //     'class' => 'form-group col-md-6'
             //   ], // extra HTML attributes for the field wrapper - mostly for resizing fields
             // 'tab' => 'Basic Info',
+            'options'   => (function ($query) use ($entry) {
+                if (! $entry) return $query->whereIn('id', [1])->get();
+                if ($entry->status_id == 1) return $query->whereIn('id', [$entry->status_id, 2])->get();
+                if ($entry->status_id == 3) return $query->whereIn('id', [$entry->status_id, 6, 7, 8])->get();
+                if ($entry->status_id == 4) return $query->whereIn('id', [$entry->status_id, 5])->get();
+                return $query->whereIn('id', [$entry->status_id])->get();
+            }), // force the related options to be a custom query, instead of all(); you can use this to filter the results show in the select
         ]
             //+ ($update ? [] : ['attributes'=> ['readonly'=>'readonly',]])
         );

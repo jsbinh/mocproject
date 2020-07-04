@@ -29,6 +29,7 @@ class ChangeRequest extends FormRequest
             // 'name' => 'required|min:5|max:255'
             'title' => 'required|min:5|max:255',
             'status_id' => 'required',
+            'assignee_id' => 'required',
         ];
     }
 

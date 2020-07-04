@@ -70,7 +70,7 @@ class ChangeObserver
         Camunda::completeTask($data);
         $task = Camunda::getTask($data['wf_instance_id']);
 
-        Log::info('change updated -- task', [$task]);
+        Log::info('change updated -- task', [$task, $data]);
 
         // task ended
         if (empty($task)) return;
@@ -86,6 +86,17 @@ class ChangeObserver
         $update = [];
         if ($decisionValue['next_status'] ?? null) {
             $update['status_id'] = (new ChangeStatus())->where('name', $decisionValue['next_status'])->first()->id;
+
+            if ($decisionValue['next_status'] == 'In-progress') {
+                Mail::send(
+                    'assignee-mail',
+                    ['change_id' => $data['id']],
+                    function ($message) use ($data) {
+                        $message->to((new User())->where('id', $data['assignee_id'])->first()->email)
+                                ->subject("[Change #{$data['id']}] To-do Mail");
+                    }
+                );
+            }
         }
         if ($decisionValue['next_approver'] ?? null) {
             $update['approver_id'] = (new User())->where('email', $decisionValue['next_approver'])->first()->id;
@@ -95,9 +106,9 @@ class ChangeObserver
             Mail::send(
                 'approval-mail',
                 ['change_id' => $data['id']],
-                function ($message) use ($decisionValue) {
+                function ($message) use ($decisionValue, $data) {
                     $message->to($decisionValue['next_approver'])
-                            ->subject('Approval Mail');
+                            ->subject("[Change #{$data['id']}] Approval Mail");
                 }
             );
         }

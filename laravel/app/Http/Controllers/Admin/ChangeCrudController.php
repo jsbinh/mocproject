@@ -16,7 +16,7 @@ class ChangeCrudController extends CrudController
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
 
@@ -234,6 +234,26 @@ class ChangeCrudController extends CrudController
             return \Framework\Models\ChangeStatus::all()->keyBy('id')->pluck('name', 'id')->toArray();
         }, function ($value) { // if the filter is active
             $this->crud->addClause('where', 'status_id', $value);
+        });
+
+        $this->crud->addFilter([ // select2 filter
+            'name' => 'assignee',
+            'type' => 'select2',
+            'label'=> 'Assignee',
+        ], function () {
+            return \Framework\User::all()->keyBy('id')->pluck('email', 'id')->toArray();
+        }, function ($value) { // if the filter is active
+            $this->crud->addClause('where', 'assignee_id', $value);
+        });
+
+        $this->crud->addFilter([ // select2 filter
+            'name' => 'approver',
+            'type' => 'select2',
+            'label'=> 'Approver',
+        ], function () {
+            return \Framework\User::all()->keyBy('id')->pluck('email', 'id')->toArray();
+        }, function ($value) { // if the filter is active
+            $this->crud->addClause('where', 'approver_id', $value);
         });
 
     }

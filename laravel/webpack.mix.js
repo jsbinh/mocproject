@@ -24,6 +24,10 @@ mix.js('resources/js/app.js', `public${subFolder}/js`).extract([
     ])
     .sass('resources/sass/app.scss', `public${subFolder}/css`);
 
+// module change
+mix.js('resources/modules/change/js/app.js', `public/modules/change/js`)
+    .sass('resources/modules/change/sass/app.scss', `public/modules/change/css`);
+
 if (mix.inProduction()) {
     mix.version();
 }

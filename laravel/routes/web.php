@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\DB;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // return view('welcome');
+    return redirect(config('backpack.base.route_prefix'));
 });
 
 Route::get('/test', function() {

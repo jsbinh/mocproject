@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="mx-auto"
+    class="mx-left"
     max-width="500"
   >
     <v-sheet class="pa-4 primary lighten-2">

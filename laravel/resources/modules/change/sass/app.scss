@@ -5,6 +5,12 @@
 // @import 'variables';
 
 // Vuetify
-.vuetify {
+#module-change {
     @import "~vuetify-scss";
+
+    > .v-card {
+        & .v-sheet {
+            background: black;
+        }
+    }
 }

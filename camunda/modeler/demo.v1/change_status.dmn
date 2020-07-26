@@ -8,62 +8,246 @@
         </inputExpression>
       </input>
       <output id="Output_1" label="Next status" name="next_status" typeRef="string" />
+      <output id="OutputClause_0onu48b" label="Allowed Statuses" name="allowed_statuses" typeRef="string" />
       <output id="OutputClause_0nhyb5p" label="Approver" name="next_approver" typeRef="string" />
       <output id="OutputClause_1nwp8a9" label="Action" name="next_action" typeRef="string" />
+      <rule id="DecisionRule_1qjv4zk">
+        <inputEntry id="UnaryTests_1usw66q">
+          <text>"Draft"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0e60dx9">
+          <text>"Draft"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_19a19yu">
+          <text>"Open"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_18ta3wq">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0bxzl0w">
+          <text></text>
+        </outputEntry>
+      </rule>
       <rule id="DecisionRule_0gm545k">
         <inputEntry id="UnaryTests_18vg0ea">
           <text>"Open"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0kpiura">
-          <text>"Waiting for approval"</text>
+          <text>"Screening progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1l7wiye">
+          <text>"Screening approved,Screening not approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1gc41hx">
           <text>"tuankiet1708@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_166909h">
-          <text>"send_approval_mail"</text>
+          <text>"send_mail_screening_progress"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_10z3j5v">
         <inputEntry id="UnaryTests_1p9egqp">
-          <text>"Returned"</text>
+          <text>"Screening approved"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1nl9vcy">
-          <text>"Draft"</text>
+          <text>"Design progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0pyr0qc">
+          <text>"Waiting for technical reviewal"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1dvrocd">
-          <text>""</text>
+          <text></text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0kf5v1y">
-          <text>""</text>
+          <text></text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_0smjxab">
         <inputEntry id="UnaryTests_0eo1kkd">
-          <text>"Approved"</text>
+          <text>"Screening not approved"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0v10jw9">
-          <text>"In-progress"</text>
+          <text>"Cancel progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_086tjp4">
+          <text>"Cancelled,Draft"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0034vs3">
-          <text>""</text>
+          <text>"tuankiet1708@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1bfxhky">
-          <text>""</text>
+          <text>"send_mail_cancel_progress"</text>
         </outputEntry>
       </rule>
       <rule id="DecisionRule_1qc3496">
+        <description>disabled</description>
         <inputEntry id="UnaryTests_03sw057">
-          <text>"In-progress"</text>
+          <text>"Cancelled"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_002aigu">
-          <text>"In-progress"</text>
+          <text>"Closed"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1m3weq9">
+          <text></text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1k3h3l8">
-          <text>""</text>
+          <text></text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0dehdjn">
-          <text>""</text>
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1g92b0y">
+        <inputEntry id="UnaryTests_0oj67h8">
+          <text>"Waiting for technical reviewal"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_055yypp">
+          <text>"Technical reviewal progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0ijduqq">
+          <text>"Technical reviewed ok,Technical reviewed not ok"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1be3n24">
+          <text>"tuankiet1708@gmail.com"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1dwg8cs">
+          <text>"send_mail_technical_reviewal_progress"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_059ujs4">
+        <inputEntry id="UnaryTests_1c7o6yy">
+          <text>"Technical reviewed ok"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0l14chx">
+          <text>"Implementation progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1ggfubb">
+          <text>"Waiting for manager approval"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1r95vkm">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0nye22s">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0n0rc9d">
+        <inputEntry id="UnaryTests_0v6nzme">
+          <text>"Technical reviewed not ok"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0yt4zdh">
+          <text>"Design progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1gsgxym">
+          <text>"Waiting for technical reviewal"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_03r29vz">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_15vwphx">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1uqxh8l">
+        <inputEntry id="UnaryTests_00n86kz">
+          <text>"Waiting for manager approval"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_12cecn7">
+          <text>"Manager approval progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_19timn4">
+          <text>"Manager approved,Manager not approved"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1jv9lzz">
+          <text>"tuankiet1708@gmail.com"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_08x6nq9">
+          <text>"send_mail_manager_approval_progress"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1uprl3b">
+        <inputEntry id="UnaryTests_1avs0a0">
+          <text>"Manager approved"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0cn5hm2">
+          <text>"Update documents progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1w1irgh">
+          <text>"Close out"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_00mt1i6">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_16z7xze">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0i0zh04">
+        <inputEntry id="UnaryTests_0jhwke6">
+          <text>"Manager not approved"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1adu2dw">
+          <text>"Implementation progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_194m70p">
+          <text>"Waiting for manager approval"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_02qg9mz">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_14b0bku">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1mknbmi">
+        <inputEntry id="UnaryTests_0pk3kqw">
+          <text>"Close out"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1i9jlvh">
+          <text>"Close out progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_15qck39">
+          <text>"Close out approved,Close out not approved"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_186f1pl">
+          <text>"tuankiet1708@gmail.com"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_01dbbnb">
+          <text>"send_mail_close_out_progress"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_12xuys9">
+        <inputEntry id="UnaryTests_0x8oc7r">
+          <text>"Close out approved"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0xxq1mf">
+          <text>"Closed"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0gwkoju">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0pe06j8">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_16dbvsi">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_117zzw1">
+        <inputEntry id="UnaryTests_147xsxk">
+          <text>"Close out not approved"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ov0ayw">
+          <text>"Update documents progress"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1ksn7uw">
+          <text>"Close out"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_03b0kb1">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1fql331">
+          <text></text>
         </outputEntry>
       </rule>
     </decisionTable>

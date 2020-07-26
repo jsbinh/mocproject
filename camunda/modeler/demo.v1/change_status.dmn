@@ -207,7 +207,7 @@
           <text>"Close out progress"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_15qck39">
-          <text>"Close out approved,Close out not approved"</text>
+          <text>"Closed,Close out not approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_186f1pl">
           <text>"tuankiet1708@gmail.com"</text>
@@ -217,6 +217,7 @@
         </outputEntry>
       </rule>
       <rule id="DecisionRule_12xuys9">
+        <description>disabled</description>
         <inputEntry id="UnaryTests_0x8oc7r">
           <text>"Close out approved"</text>
         </inputEntry>

@@ -106,7 +106,7 @@ return [
 
     'header_class' => 'app-header bg-dark navbar',
     'body_class' => 'app aside-menu-fixed sidebar-lg-show',
-    'sidebar_class' => 'sidebar bg-white sidebar-pills',
+    'sidebar_class' => 'sidebar bg-white sidebar-transparent',
     'footer_class' => 'app-footer d-none',
 
     // Developer or company name. Shown in footer.

@@ -26,6 +26,7 @@
         "v-jsoneditor": "^1.4.1",
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.10",
+        "vuelidate": "^0.7.5",
         "vuetify": "^2.3.4",
         "vuetify-scss": "^1.4.0",
         "vuex": "^3.4.0"

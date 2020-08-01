@@ -8,9 +8,9 @@
 #module-change {
     @import "~vuetify-scss";
 
-    > .v-card {
+    .v-card {
         & .v-sheet {
-            background: #161D2D;
+            background: #161D2D !important;
         }
     }
 }

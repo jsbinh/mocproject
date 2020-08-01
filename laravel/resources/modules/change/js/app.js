@@ -21,7 +21,7 @@ Vue.use(Vuetify);
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('helloworld-component', require('./components/HelloWorld.vue').default);
+Vue.component('change-container-component', require('./components/ChangeContainer.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

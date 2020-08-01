@@ -3,7 +3,7 @@
 
 @section('content')
     <div id="module-change" class="vuetify">
-        <helloworld-component/>
+        <change-container-component />
     </div>
 @endsection
 

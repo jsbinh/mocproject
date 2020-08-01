@@ -1,5 +1,5 @@
 <template>
-    <v-card class="mr-2 mb-2">
+    <v-card>
         <v-sheet class="pa-4 primary lighten-2">
             <v-text-field v-model="search" label="Search Platform / Unit / Change" dark flat solo-inverted hide-details
                 clearable clear-icon="mdi-close-circle-outline"></v-text-field>

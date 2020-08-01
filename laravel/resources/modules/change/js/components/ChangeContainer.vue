@@ -24,5 +24,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+    #app-change {
+        background: transparent !important;
+    }
 </style>

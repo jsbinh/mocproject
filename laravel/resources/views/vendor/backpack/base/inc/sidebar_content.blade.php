@@ -4,5 +4,11 @@
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('slug') }}'><i class='nav-icon la la-question'></i> Slugs</a></li> --}}
 
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('change') }}'><i class='nav-icon la la-list'></i> Changes</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('change2') }}'><i class='nav-icon la la-sitemap'></i> Changes Tree</a></li>
+
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('factory') }}'><i class='nav-icon la la-industry'></i> Factories</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('unit') }}'><i class='nav-icon la la-stream'></i> Units</a></li>
+<li class='nav-item'><a class='nav-link' href='{{ backpack_url('system') }}'><i class='nav-icon la la-stream'></i> Systems</a></li>
+
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('change-status') }}'><i class='nav-icon la la-tag'></i> Change Statuses</a></li>
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('user') }}'><i class='nav-icon la la-users'></i> Users</a></li>

@@ -1,7 +1,19 @@
 <template>
     <v-card>
         <v-card-text>
-            <form>
+            <v-tabs light @change="onChangeTab">
+                <v-tab>
+                    General
+                </v-tab>
+                <v-tab>
+                    Attachments
+                </v-tab>
+                <v-tab>
+                    History
+                </v-tab>
+            </v-tabs>
+
+            <form v-if="activeTab === 0">
                 <v-row class="mb-n6">
                     <v-col>
                         <v-text-field
@@ -80,6 +92,41 @@
                 <v-btn class="mr-4" @click="submit">submit</v-btn>
                 <v-btn @click="clear">clear</v-btn>
             </form>
+
+            <form v-if="activeTab === 1">
+                <v-row class="mb-n6">
+                    <v-col>
+                        <v-file-input
+                            v-model="files"
+                            counter
+                            label="File input"
+                            multiple
+                            placeholder="Select your files"
+                            prepend-icon="mdi-paperclip"
+                            outlined
+                            :show-size="1000"
+                        >
+                            <template v-slot:selection="{ index, text }">
+                                <v-chip
+                                    v-if="index < 2"
+                                    dark
+                                    label
+                                    small
+                                >
+                                    {{ text }}
+                                </v-chip>
+
+                                <span
+                                    v-else-if="index === 2"
+                                    class="overline grey--text text--darken-3 mx-2"
+                                >
+                                    +{{ files.length - 2 }} File(s)
+                                </span>
+                            </template>
+                        </v-file-input>
+                    </v-col>
+                </v-row>
+            </form>
         </v-card-text>
     </v-card>
 </template>
@@ -104,10 +151,22 @@
             }
         },
 
+        // props: {
+        //     "template": {
+        //         type: Boolean,
+        //         default: false
+        //     }
+        // },
+
         data: () => ({
+            activeTab: 0,
             id: null,
             title: '',
             description: null,
+            creator: null,
+            created_at: null,
+            assigned_to: null,
+            files: []
         }),
 
         computed: {
@@ -128,6 +187,9 @@
                 this.title = '';
                 this.description = '';
             },
+            onChangeTab(index) {
+                this.activeTab = index;
+            }
         },
     }
 

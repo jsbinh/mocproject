@@ -93,24 +93,25 @@
 @push('after_scripts')
   <script>
       jQuery(document).ready(function($) {
+          var baseRoute = "/{{ config('backpack.base.route_prefix', 'admin') }}";
           // trigger select2 for each untriggered select2 box
           $('.change-status-2').on('click', function() {
-            window.location.href = "/admin/change?status=2";
+            window.location.href = baseRoute + "/change?status=2";
           });
           $('.change-status-3').on('click', function() {
-            window.location.href = "/admin/change?status=3";
+            window.location.href = baseRoute + "/change?status=3";
           });
           $('.change-status-6').on('click', function() {
-            window.location.href = "/admin/change?status=6";
+            window.location.href = baseRoute + "/change?status=6";
           });
           $('.change-status-1').on('click', function() {
-            window.location.href = "/admin/change?status=1";
+            window.location.href = baseRoute + "/change?status=1";
           });
           $('.change-status-4').on('click', function() {
-            window.location.href = "/admin/change?status=4";
+            window.location.href = baseRoute + "/change?status=4";
           });
           $('.change-status-5').on('click', function() {
-            window.location.href = "/admin/change?status=5";
+            window.location.href = baseRoute + "/change?status=5";
           });
       });
   </script>

@@ -29,4 +29,13 @@ class Change2CrudController extends ChangeCrudController
         // $this->crud->getListView() returns 'list' by default, or 'list_ajax' if ajax was enabled
         return view('modules.change.change', $this->data);
     }
+
+    public function getSelectItems(string $item)
+    {
+        $model = '\\Framework\\Models\\' . ucfirst($item);
+        $data = (new $model())->get()->toArray();
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }

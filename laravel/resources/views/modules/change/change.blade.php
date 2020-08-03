@@ -17,6 +17,11 @@
 @endpush
 
 @push('crud_list_scripts')
+    <script>
+    // global baseRoute
+    var baseRoute = "/{{ config('backpack.base.route_prefix', 'admin') }}";
+    </script>
+
     <script src="{{ mix('modules/change/js/manifest.js') }}" defer></script>
     <script src="{{ mix('modules/change/js/vendor.js') }}" defer></script>
     <script src="{{ mix('modules/change/js/app.js') }}" defer></script>

@@ -207,7 +207,6 @@
         // },
 
         data: () => ({
-            activeTab: 0,
             id: null,
             factory: null,
             unit: null,
@@ -219,19 +218,28 @@
             assigned_to: null,
             files: [],
 
-            factoryItems: [
-                { id: 0, name: "Factory #1" },
-                { id: 1, name: "Factory #2" },
-            ],
-            unitItems: [
-                { id: 0, name: "Unit #1" },
-                { id: 1, name: "Unit #2" },
-            ],
-            systemItems: [
-                { id: 0, name: "System #1" },
-                { id: 1, name: "System #2" },
-            ]
+            activeTab: 0,
+            factoryItems: [],
+            unitItems: [],
+            systemItems: []
         }),
+
+        mounted() {
+            // load select options
+            ['factory', 'unit', 'system'].forEach(item => {
+                axios
+                .get(`${baseRoute}/web/change/select-items/${item}`)
+                .then(
+                    response => this[`${item}Items`] = _.get(response, 'data.data', [])
+                )
+                .catch(
+                    error => void(0)
+                )
+                .then(
+                    () => void(0) // always executed
+                );
+            })
+        },
 
         computed: {
             titleErrors() {
@@ -263,6 +271,21 @@
         methods: {
             submit() {
                 this.$v.$touch();
+
+                const data = _.pick(this, [
+                    'id',
+                    'factory',
+                    'unit',
+                    'system',
+                    'title',
+                    'description',
+                    'creator',
+                    'created_at',
+                    'assigned_to',
+                    'files',
+                ]);
+
+                console.info("@@@ submit @@@", data);
 
                 if (this.$v.$error) alert("Error!");
             },

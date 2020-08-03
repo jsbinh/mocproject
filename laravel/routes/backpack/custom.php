@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
 // --------------------------
 // Custom Backpack Routes
 // --------------------------
@@ -14,6 +17,12 @@ Route::group([
     ],
     'namespace'  => 'Framework\Http\Controllers\Admin',
 ], function () { // custom admin routes
+    Route::group(['prefix' => 'web'], function() {
+        Route::group(['prefix' => 'change'], function() {
+            Route::get('select-items/{item}', 'Change2CrudController@getSelectItems');
+        });
+    });
+
     Route::crud('tag', 'TagCrudController');
     Route::crud('slug', 'SlugCrudController');
     Route::crud('change-status', 'ChangeStatusCrudController');

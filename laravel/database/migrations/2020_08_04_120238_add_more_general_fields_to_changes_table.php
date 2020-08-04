@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddWfToChangesTable extends Migration
+class AddMoreGeneralFieldsToChangesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,11 @@ class AddWfToChangesTable extends Migration
     {
         Schema::table('changes', function (Blueprint $table) {
             //
-            $table->string('wf_instance_id', 100)->nullable()->before('created_at');
-            $table->string('wf_task_id', 100)->nullable()->before('wf_instance_id');
+            $table->text('justification')->nullable();
+            $table->integer('factory');
+            $table->integer('unit');
+            $table->integer('system');
+
         });
     }
 
@@ -29,7 +32,7 @@ class AddWfToChangesTable extends Migration
     {
         Schema::table('changes', function (Blueprint $table) {
             //
-            $table->dropColumn(['wf_instance_id', 'wf_task_id']);
+            $table->dropColumn(['justification', 'factory', 'unit', 'system']);
         });
     }
 }

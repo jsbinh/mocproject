@@ -20,6 +20,9 @@ Route::group([
     Route::group(['prefix' => 'web'], function() {
         Route::group(['prefix' => 'change'], function() {
             Route::get('select-items/{item}', 'Change2CrudController@getSelectItems');
+            Route::post('/', 'Change2CrudController@createChange');
+            Route::put('/{id}', 'Change2CrudController@updateChange');
+            Route::get('/{id}', 'Change2CrudController@viewChange');
         });
     });
 

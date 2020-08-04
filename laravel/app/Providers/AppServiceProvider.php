@@ -21,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
         //
         // View::share('assetDir', env('APP_ENV') == 'production' ? 'build/' : '');
         // View::share('assetPath', env('APP_ENV') == 'production' ? 'mix' : 'asset');
-        Change::observe(ChangeObserver::class);
+
+        // TODO: Model Observer
+        // Change::observe(ChangeObserver::class);
     }
 
     /**

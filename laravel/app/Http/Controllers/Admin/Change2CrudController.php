@@ -5,6 +5,9 @@ namespace Framework\Http\Controllers\Admin;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Framework\Http\Requests\ChangeRequest;
+use Framework\Models\Change;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 /**
  * Class ChangeCrudController
@@ -37,5 +40,36 @@ class Change2CrudController extends ChangeCrudController
         return response()->json([
             'data' => $data
         ]);
+    }
+
+    public function createChange(Request $request)
+    {
+        $change = new Change;
+        $fields = [
+            // 'id',
+            'factory',
+            'unit',
+            'system',
+            'title',
+            'description',
+            'justification',
+        ];
+
+        // retrieve id
+        $id = $request->input('id');
+        if (! empty($id)) {
+            // find change
+            $change = $change->find($id);
+        }
+
+        // assign value
+        foreach ($fields as $field) {
+            $change->{$field} = $request->input($field);
+        }
+
+        // save to db
+        $result = $change->save();
+
+        return response()->json(compact('result'));
     }
 }

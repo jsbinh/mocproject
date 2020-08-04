@@ -212,7 +212,7 @@
             unit: null,
             system: null,
             title: '',
-            description: null,
+            description: '',
             creator: null,
             created_at: null,
             assigned_to: null,
@@ -272,6 +272,8 @@
             submit() {
                 this.$v.$touch();
 
+                if (this.$v.$error) return alert("Error! Please check the form.");
+
                 const data = _.pick(this, [
                     'id',
                     'factory',
@@ -287,7 +289,19 @@
 
                 console.info("@@@ submit @@@", data);
 
-                if (this.$v.$error) alert("Error!");
+                axios
+                .post(`${baseRoute}/web/change`, data)
+                .then(
+                    response => {
+                        //
+                    }
+                )
+                .catch(
+                    error => void(0)
+                )
+                .then(
+                    () => void(0)
+                );
             },
             clear() {
                 this.$v.$reset();

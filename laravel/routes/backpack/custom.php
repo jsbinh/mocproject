@@ -19,7 +19,8 @@ Route::group([
 ], function () { // custom admin routes
     Route::group(['prefix' => 'web'], function() {
         Route::group(['prefix' => 'change'], function() {
-            Route::get('select-items/{item}', 'Change2CrudController@getSelectItems');
+            Route::get('/select-items/{item}', 'Change2CrudController@getSelectItems');
+            Route::get('/tree', 'Change2CrudController@getTreeOfChanges');
             Route::post('/', 'Change2CrudController@createChange');
             Route::put('/{id}', 'Change2CrudController@updateChange');
             Route::get('/{id}', 'Change2CrudController@viewChange');

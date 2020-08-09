@@ -33,6 +33,15 @@ class Change2CrudController extends ChangeCrudController
         return view('modules.change.change', $this->data);
     }
 
+    public function getTreeOfChanges()
+    {
+        $model = new Change;
+        $data = $model->getTreeOfChanges();
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
     public function getSelectItems(string $item)
     {
         $model = '\\Framework\\Models\\' . ucfirst($item);

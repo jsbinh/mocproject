@@ -65,8 +65,14 @@
             );
         },
         methods: {
+            // ...mapActions({
+            //     setFoo (dispatch) {
+            //         dispatch('setFoo')
+            //     },
+            // }),
             selectNode(node) {
-                console.log("@@@ select node @@@", {...node[0]});
+                // console.log("@@@ select node @@@", {...node[0]});
+                this.$store.dispatch('selectNode', {...node[0]});
             },
             createNewChange(e, item) {
                 e.preventDefault();

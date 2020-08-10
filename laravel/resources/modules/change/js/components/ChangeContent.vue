@@ -171,6 +171,7 @@
 </template>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex';
     import {
         validationMixin
     } from 'vuelidate';
@@ -179,6 +180,19 @@
         maxLength,
         email
     } from 'vuelidate/lib/validators';
+
+    const defaultData = {
+        id: null,
+        factory: null,
+        unit: null,
+        system: null,
+        title: '',
+        description: '',
+        creator: null,
+        created_at: null,
+        assigned_to: null,
+        files: [],
+    };
 
     export default {
         mixins: [validationMixin],
@@ -207,16 +221,7 @@
         // },
 
         data: () => ({
-            id: null,
-            factory: null,
-            unit: null,
-            system: null,
-            title: '',
-            description: '',
-            creator: null,
-            created_at: null,
-            assigned_to: null,
-            files: [],
+            ...defaultData,
 
             activeTab: 0,
             factoryItems: [],
@@ -241,7 +246,20 @@
             })
         },
 
+        watch: {
+            selectedNode: function (newValue, oldValue) {
+                if (newValue && newValue != oldValue && newValue.level === 3) {
+                    console.log('@@@ node changed @@@', newValue);
+                    this.loadData(newValue.id);
+                }
+            }
+        },
+
         computed: {
+            ...mapGetters([
+                'foo',
+                'selectedNode'
+            ]),
             titleErrors() {
                 const errors = [];
                 if (!this.$v.title.$dirty) return errors;
@@ -269,23 +287,37 @@
         },
 
         methods: {
+            // ...mapActions({
+            //     setFoo (dispatch) {
+            //         dispatch('setFoo')
+            //     },
+            // }),
+            loadData(id) {
+                this.clear();
+                axios
+                .get(`${baseRoute}/web/change/${id}`)
+                .then(
+                    response => {
+                        //
+                        const change = response.data.data;
+                        _.keys(defaultData).map(key => {
+                            this[key] = _.get(change, key);
+                        });
+                    }
+                )
+                .catch(
+                    error => void(0)
+                )
+                .then(
+                    () => void(0)
+                );
+            },
             submit() {
                 this.$v.$touch();
 
                 if (this.$v.$error) return alert("Error! Please check the form.");
 
-                const data = _.pick(this, [
-                    'id',
-                    'factory',
-                    'unit',
-                    'system',
-                    'title',
-                    'description',
-                    'creator',
-                    'created_at',
-                    'assigned_to',
-                    'files',
-                ]);
+                const data = _.pick(this, _.keys(defaultData));
 
                 console.info("@@@ submit @@@", data);
 
@@ -305,8 +337,10 @@
             },
             clear() {
                 this.$v.$reset();
-                this.title = '';
-                this.description = '';
+
+                _.keys(defaultData).map(key => {
+                    this[key] = _.get(defaultData, key);
+                });
             },
             onChangeTab(index) {
                 this.activeTab = index;

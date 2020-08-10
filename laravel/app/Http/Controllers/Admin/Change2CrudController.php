@@ -81,4 +81,13 @@ class Change2CrudController extends ChangeCrudController
 
         return response()->json(compact('result'));
     }
+
+    public function viewChange(string $id)
+    {
+        $model = new Change;
+        $data = $model->where('id', intval($id))->first()->toArray();
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }

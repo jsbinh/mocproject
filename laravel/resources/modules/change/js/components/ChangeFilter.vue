@@ -1,21 +1,37 @@
 <template>
     <v-card>
         <v-sheet class="pa-4 primary lighten-2">
-            <v-text-field v-model="search" label="Search Platform / Unit / Change" dark flat solo-inverted hide-details
+            <v-text-field v-model="search"
+                label="Search Factory / Unit / System / Change"
+                dark flat solo-inverted hide-details
                 clearable clear-icon="mdi-close-circle-outline"></v-text-field>
             <!-- <v-checkbox
-        v-model="caseSensitive"
-        dark
-        hide-details
-        label="Case sensitive search"
-      ></v-checkbox> -->
+                v-model="caseSensitive"
+                dark
+                hide-details
+                label="Case sensitive search"
+            ></v-checkbox> -->
         </v-sheet>
         <v-card-text v-if="items">
-            <v-treeview :items="items" :search="search" :filter="filter" open-all="true">
+            <v-treeview
+                return-object
+                :items="items"
+                :search="search"
+                :filter="filter"
+                :open-all="true"
+                rounded
+                hoverable
+                activatable
+                @update:active="selectNode"
+            >
                 <template v-slot:prepend="{ item }">
-                    <v-icon v-if="item.children"
-                        v-text="`mdi-${item.level === 0 ? 'factory' : item.level === 1 ? 'view-stream' : item.level === 2 ? 'view-stream' : 'clipboard-list-outline'}`">
+                    <v-icon v-text="`mdi-${item.level === 0 ? 'factory' : item.level === 1 ? 'view-stream' : item.level === 2 ? 'view-stream' : 'clipboard-list-outline'}`">
                     </v-icon>
+                </template>
+                <template slot="append" slot-scope="{ item }">
+                    <v-btn rounded small v-if="item.level === 2" @click="e => createNewChange(e, item)" title="Create a new change">
+                        <v-icon left>mdi-plus-circle</v-icon> New Change
+                    </v-btn>
                 </template>
             </v-treeview>
         </v-card-text>
@@ -23,6 +39,8 @@
 </template>
 
 <script>
+    import { mapGetters, mapActions } from 'vuex';
+
     export default {
         name: "ChangeFilter",
         data: () => ({
@@ -45,6 +63,17 @@
             .then(
                 () => void(0)
             );
+        },
+        methods: {
+            selectNode(node) {
+                console.log("@@@ select node @@@", {...node[0]});
+            },
+            createNewChange(e, item) {
+                e.preventDefault();
+                e.stopPropagation();
+                alert('create a new change');
+                console.log("@@@ createNewChange @@@", {...item});
+            }
         },
         computed: {
             filter() {

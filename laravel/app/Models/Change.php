@@ -50,37 +50,41 @@ class Change extends Model
 
             if (empty($factory) || empty($unit) || empty($system)) continue;
 
-            $tree[$factory]['id'] = $factory;
+            $factoryId = $tree[$factory]['id'] = "f_" . str_pad($factory, 10, '0', STR_PAD_LEFT);
             $tree[$factory]['name'] = $factories[$factory]['name'];
             $tree[$factory]['level'] = 0;
-            $tree[$factory]['children'][$unit]['id'] = $unit;
+            $unitId = $tree[$factory]['children'][$unit]['id'] = $factoryId . "_u_" . str_pad($unit, 10, '0', STR_PAD_LEFT);
             $tree[$factory]['children'][$unit]['name'] = $units[$unit]['name'];
             $tree[$factory]['children'][$unit]['level'] = 1;
-            $tree[$factory]['children'][$unit]['children'][$system]['id'] = $system;
+            $tree[$factory]['children'][$unit]['children'][$system]['id'] = $unitId . "_s_" . str_pad($system, 10, '0', STR_PAD_LEFT);
             $tree[$factory]['children'][$unit]['children'][$system]['name'] = $systems[$system]['name'];
             $tree[$factory]['children'][$unit]['children'][$system]['level'] = 2;
-            $tree[$factory]['children'][$unit]['children'][$system]['children'][] = $change + ['level' => 3, 'name' => $change['title'], 'children' => []];
+            $tree[$factory]['children'][$unit]['children'][$system]['children'][] = $change + [
+                'level' => 3,
+                'name' => 'C' . str_pad($change['id'], 6, '0', STR_PAD_LEFT) . ' - ' . $change['title'],
+                'children' => []
+            ];
         }
 
         // default data for empty data of factory
         // factories
         foreach ($factories as $factory) {
             if (! Arr::has($tree, $factory['id'])) {
-                $tree[$factory['id']]['id'] = $factory['id'];
+                $factoryId = $tree[$factory['id']]['id'] = "f_" . str_pad($factory['id'], 10, '0', STR_PAD_LEFT);
                 $tree[$factory['id']]['name'] = $factory['name'];
                 $tree[$factory['id']]['level'] = 0;
                 $tree[$factory['id']]['children'] = [];
 
                 // units
                 foreach ($units as $unit) {
-                    $tree[$factory['id']]['children'][$unit['id']]['id'] = $unit['id'];
+                    $unitId = $tree[$factory['id']]['children'][$unit['id']]['id'] = $factoryId . "_u_" . str_pad($unit['id'], 10, '0', STR_PAD_LEFT);;
                     $tree[$factory['id']]['children'][$unit['id']]['name'] = $unit['name'];
                     $tree[$factory['id']]['children'][$unit['id']]['level'] = 1;
                     $tree[$factory['id']]['children'][$unit['id']]['children'] = [];
 
                     // systems
                     foreach ($systems as $system) {
-                        $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['id'] = $system['id'];
+                        $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['id'] = $unitId . "_s_" . str_pad($system['id'], 10, '0', STR_PAD_LEFT);;
                         $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['name'] = $system['name'];
                         $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['level'] = 2;
                         $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['children'] = [];

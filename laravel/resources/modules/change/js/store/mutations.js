@@ -4,6 +4,9 @@ const mutations = {
     },
     selectNode (state, value) {
         state.selectedNode = value;
+    },
+    toggleButtonNewChange (state, value) {
+        state.buttonNewChangeClicked = value;
     }
 }
 

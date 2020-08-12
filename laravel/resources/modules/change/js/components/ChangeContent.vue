@@ -252,13 +252,19 @@
                     console.log('@@@ node changed @@@', newValue);
                     this.loadData(newValue.id);
                 }
+            },
+            buttonNewChangeClicked: function (newValue, oldValue) {
+                if (newValue && newValue != oldValue) {
+                    this.clear();
+                }
             }
         },
 
         computed: {
             ...mapGetters([
                 'foo',
-                'selectedNode'
+                'selectedNode',
+                'buttonNewChangeClicked'
             ]),
             titleErrors() {
                 const errors = [];

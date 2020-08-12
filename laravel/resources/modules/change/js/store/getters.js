@@ -6,3 +6,7 @@ export const foo = (state, getters) => {
 export const selectedNode = (state, getters) => {
     return state.selectedNode;
 }
+
+export const buttonNewChangeClicked = (state, getters) => {
+    return state.buttonNewChangeClicked;
+}

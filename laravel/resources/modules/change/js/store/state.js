@@ -2,7 +2,8 @@
 // each Vuex instance is just a single state tree.
 const state = {
     foo: 'bar',
-    selectedNode: null
+    selectedNode: null,
+    buttonNewChangeClicked: false
 }
 
 export default state;

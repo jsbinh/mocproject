@@ -29,7 +29,7 @@
                     </v-icon>
                 </template>
                 <template slot="append" slot-scope="{ item }">
-                    <v-btn rounded small v-if="item.level === 2" @click="e => createNewChange(e, item)" title="Create a new change">
+                    <v-btn rounded small v-if="item.level === 2" @click="e => newChange(e, item)" title="Create a new change">
                         <v-icon left>mdi-plus-circle</v-icon> New Change
                     </v-btn>
                 </template>
@@ -65,20 +65,20 @@
             );
         },
         methods: {
-            // ...mapActions({
-            //     setFoo (dispatch) {
-            //         dispatch('setFoo')
-            //     },
-            // }),
+             ...mapActions({
+                async newChange (dispatch, e, item) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    console.log("@@@ createNewChange @@@", {...item});
+                    dispatch('toggleButtonNewChange', true);
+                    await setTimeout(() => null, 700);
+                    dispatch('toggleButtonNewChange', false);
+                },
+            }),
             selectNode(node) {
                 // console.log("@@@ select node @@@", {...node[0]});
                 this.$store.dispatch('selectNode', {...node[0]});
-            },
-            createNewChange(e, item) {
-                e.preventDefault();
-                e.stopPropagation();
-                alert('create a new change');
-                console.log("@@@ createNewChange @@@", {...item});
             }
         },
         computed: {

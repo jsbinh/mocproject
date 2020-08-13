@@ -3,7 +3,14 @@
 const state = {
     foo: 'bar',
     selectedNode: null,
-    buttonNewChangeClicked: false,
+    buttonNewChangeClicked: {
+        clicked: false,
+        meta: {
+            factory: null,
+            unit: null,
+            system: null
+        }
+    },
     dataChanged: 0
 }
 

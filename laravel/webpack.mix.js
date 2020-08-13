@@ -16,7 +16,7 @@ const subFolder = '';
 
 mix.js('resources/js/app.js', `public${subFolder}/js`).extract([
         'vue', 'vuex',
-        'axios',
+        'axios', 'moment',
         'jquery',
         'lodash',
         'bootstrap', 'popper.js',

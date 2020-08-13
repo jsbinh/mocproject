@@ -79,7 +79,7 @@ class Change2CrudController extends ChangeCrudController
         // save to db
         $result = $change->save();
 
-        return response()->json(compact('result'));
+        return response()->json(compact('result') + ['id' => $change->id]);
     }
 
     public function viewChange(string $id)

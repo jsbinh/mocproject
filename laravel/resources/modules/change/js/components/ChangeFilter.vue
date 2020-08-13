@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-sheet class="pa-4 primary lighten-2">
+        <v-sheet class="pa-4 dark lighten-2">
             <v-text-field v-model="search"
                 label="Search Factory / Unit / System / Change"
                 dark flat solo-inverted hide-details
@@ -12,7 +12,7 @@
                 label="Case sensitive search"
             ></v-checkbox> -->
         </v-sheet>
-        <v-card-text v-if="items">
+        <v-card-text v-if="items" class="tree-container">
             <v-treeview
                 return-object
                 :items="items"
@@ -66,9 +66,15 @@
                     e.stopPropagation();
 
                     console.log("@@@ createNewChange @@@", {...item});
-                    dispatch('toggleButtonNewChange', true);
+
+                    const splits = _.split(item.id, '_');
+                    dispatch('toggleButtonNewChange', {clicked: true, meta: {
+                        factory: splits[1] >> 0,
+                        unit: splits[3] >> 0,
+                        system: splits[5] >> 0
+                    }});
                     await setTimeout(() => null, 700);
-                    dispatch('toggleButtonNewChange', false);
+                    dispatch('toggleButtonNewChange', {clicked: false, meta: null});
                 },
             }),
             loadData() {
@@ -104,3 +110,11 @@
     }
 
 </script>
+
+<style lang="scss" scoped>
+.tree-container {
+    max-height: calc(100vh - 208px);
+    // max-height: 787px;
+    overflow-y: auto;
+}
+</style>

@@ -3,11 +3,12 @@
         <v-card-text>
             <v-tabs light @change="onChangeTab">
                 <v-tab>General</v-tab>
+                <v-tab>Notes & Comments</v-tab>
                 <v-tab>Attachments</v-tab>
                 <v-tab>History</v-tab>
             </v-tabs>
 
-            <form v-if="activeTab === 0">
+            <form v-if="activeTab === 0" onsubmit="return false">
                 <v-row class="mb-n6">
                     <v-col cols="6">
                         <v-text-field
@@ -74,9 +75,9 @@
                                 <v-divider></v-divider>
                                 <v-stepper-step step="2" complete>Screening</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="3">Design</v-stepper-step>
+                                <v-stepper-step step="3" complete>Design</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="4">Review</v-stepper-step>
+                                <v-stepper-step step="4" complete>Review</v-stepper-step>
                                 <v-divider></v-divider>
                                 <v-stepper-step step="5">Implementation</v-stepper-step>
                                 <v-divider></v-divider>
@@ -167,11 +168,75 @@
                     </v-col>
                 </v-row>
 
-                <v-btn class="mr-4" @click="submit">submit</v-btn>
+                <v-btn class="mr-4" @click="submit">{{id ? "update" : "submit"}}</v-btn>
                 <v-btn @click="clear">clear</v-btn>
             </form>
 
-            <form v-if="activeTab === 1">
+            <form v-if="activeTab === 1" onsubmit="return false">
+                <v-timeline dense clipped>
+                    <v-timeline-item
+                        fill-dot
+                        class="white--text mb-12"
+                        color="blue"
+                        large
+                    >
+                        <template v-slot:icon>
+                            <v-icon center color="white">mdi-message-bulleted</v-icon>
+                        </template>
+                        <v-text-field
+                            v-model="input"
+                            hide-details
+                            flat
+                            label="Leave a comment..."
+                            solo
+                            @keydown.enter="comment"
+                        >
+                            <template v-slot:append>
+                                <v-btn
+                                    class="mx-0"
+                                    depressed
+                                    @click="comment"
+                                >
+                                    Post
+                                </v-btn>
+                            </template>
+                        </v-text-field>
+                    </v-timeline-item>
+
+                    <v-slide-x-transition
+                        group
+                    >
+                        <v-timeline-item
+                            v-for="event in timeline"
+                            :key="event.id"
+                            class="mb-4"
+                            color="blue"
+                            small
+                            >
+                            <v-row justify="space-between">
+                                <v-col cols="7" v-text="event.text"></v-col>
+                                <v-col class="text-right" cols="5" v-text="event.time"></v-col>
+                            </v-row>
+                        </v-timeline-item>
+                    </v-slide-x-transition>
+
+                    <v-timeline-item
+                        color="grey"
+                        small
+                    >
+                        <v-row justify="space-between">
+                            <v-col cols="7">
+                                John Leider placed this order on Online Store (checkout #1937432132572).
+                            </v-col>
+                            <v-col class="text-right" cols="5">
+                                {{now}}
+                            </v-col>
+                        </v-row>
+                    </v-timeline-item>
+                </v-timeline>
+            </form>
+
+            <form v-if="activeTab === 2" onsubmit="return false">
                 <v-row class="mb-n6">
                     <v-col>
                         <v-file-input
@@ -206,6 +271,26 @@
                 </v-row>
             </form>
         </v-card-text>
+
+        <v-snackbar
+            v-model="snackbar"
+            :color="hasError ? 'error' : 'success'"
+            :timeout="5000"
+            :top="true"
+        >
+            {{ hasError ? "Something went wrong. Please try again." : "Save successfully." }}
+
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    dark
+                    text
+                    v-bind="attrs"
+                    @click="snackbar = false"
+                >
+                    Close
+                </v-btn>
+            </template>
+        </v-snackbar>
     </v-card>
 </template>
 
@@ -266,10 +351,16 @@
         data: () => ({
             ...defaultData,
 
+            events: [],
+            input: null,
+            nonce: 0,
+            snackbar: false,
+            hasError: false,
+
             activeTab: 0,
             factoryItems: [],
             unitItems: [],
-            systemItems: []
+            systemItems: [],
         }),
 
         mounted() {
@@ -297,8 +388,12 @@
                 }
             },
             buttonNewChangeClicked: function (newValue, oldValue) {
-                if (newValue && newValue != oldValue) {
+                if (newValue.clicked && newValue.clicked != oldValue.clicked) {
                     this.clear();
+                    this.activeTab = 0;
+                    this.factory = newValue.meta.factory;
+                    this.unit = newValue.meta.unit;
+                    this.system = newValue.meta.system;
                 }
             }
         },
@@ -309,6 +404,13 @@
                 'selectedNode',
                 'buttonNewChangeClicked'
             ]),
+            timeline() {
+                return this.events.slice().reverse()
+            },
+            now() {
+                return moment().format("MM-DD-YYYY HH:mm:ss");
+            },
+
             titleErrors() {
                 const errors = [];
                 if (!this.$v.title.$dirty) return errors;
@@ -345,6 +447,17 @@
             ...mapActions({
                 'changeData': 'changeData'
             }),
+            comment () {
+                const time = (new Date()).toTimeString()
+                this.events.push({
+                    id: this.nonce++,
+                    text: this.input,
+                    time: moment().format("MM-DD-YYYY HH:mm:ss"),
+                })
+
+                this.input = null
+            },
+
             loadData(id) {
                 this.clear();
                 axios
@@ -356,6 +469,8 @@
                         _.keys(defaultData).map(key => {
                             this[key] = _.get(change, key);
                         });
+
+                        this.created_at = moment(this.created_at).format("MM-DD-YYYY HH:mm:ss");
                     }
                 )
                 .catch(
@@ -379,10 +494,16 @@
                 .then(
                     response => {
                         //
+                        this.id = response.data.id;
+                        this.snackbar = true;
+                        this.hasError = false;
                     }
                 )
                 .catch(
-                    error => void(0)
+                    error => {
+                        this.snackbar = true;
+                        this.hasError = true;
+                    }
                 )
                 .then(
                     () => this.changeData()

@@ -1,11 +1,11 @@
 <template>
     <v-card>
-        <v-card-text>
+        <v-card-text v-if="context == 'change'">
             <v-tabs light @change="onChangeTab">
                 <v-tab>General</v-tab>
                 <v-tab>Notes & Comments</v-tab>
                 <v-tab>Attachments</v-tab>
-                <v-tab>History</v-tab>
+                <!-- <v-tab>History</v-tab> -->
             </v-tabs>
 
             <form v-if="activeTab === 0" onsubmit="return false">
@@ -69,15 +69,15 @@
                 <v-row class="mb-n6">
                     <v-col>
                         <v-label>Status</v-label>
-                        <v-stepper alt-labels style="box-shadow:none;" value="5">
+                        <v-stepper alt-labels style="box-shadow:none;" value="2">
                             <v-stepper-header>
                                 <v-stepper-step step="1" complete>Open</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="2" complete>Screening</v-stepper-step>
+                                <v-stepper-step step="2">Screening</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="3" complete>Design</v-stepper-step>
+                                <v-stepper-step step="3">Design</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="4" complete>Review</v-stepper-step>
+                                <v-stepper-step step="4">Review</v-stepper-step>
                                 <v-divider></v-divider>
                                 <v-stepper-step step="5">Implementation</v-stepper-step>
                                 <v-divider></v-divider>
@@ -155,7 +155,7 @@
                     </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row class="mb-n6">
                     <v-col cols="6">
                         <v-text-field
                             v-model="assigned_to"
@@ -168,8 +168,16 @@
                     </v-col>
                 </v-row>
 
-                <v-btn class="mr-4" @click="submit">{{id ? "update" : "submit"}}</v-btn>
-                <v-btn @click="clear">clear</v-btn>
+                <v-row>
+                    <v-col cols="4">
+                        <v-btn class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
+                        <v-btn @click="clear">clear</v-btn>
+                    </v-col>
+                    <v-col cols="8" class="text-sm-right">
+                        <v-btn class="mr-1 primary" @click="submit">Screening approved</v-btn>
+                        <v-btn class="error" @click="clear">Screening not approved</v-btn>
+                    </v-col>
+                </v-row>
             </form>
 
             <form v-if="activeTab === 1" onsubmit="return false">
@@ -183,13 +191,10 @@
                         <template v-slot:icon>
                             <v-icon center color="white">mdi-message-bulleted</v-icon>
                         </template>
-                        <v-text-field
+                        <v-textarea
                             v-model="input"
-                            hide-details
-                            flat
                             label="Leave a comment..."
                             solo
-                            @keydown.enter="comment"
                         >
                             <template v-slot:append>
                                 <v-btn
@@ -200,7 +205,7 @@
                                     Post
                                 </v-btn>
                             </template>
-                        </v-text-field>
+                        </v-textarea>
                     </v-timeline-item>
 
                     <v-slide-x-transition
@@ -214,8 +219,20 @@
                             small
                             >
                             <v-row justify="space-between">
-                                <v-col cols="7" v-text="event.text"></v-col>
-                                <v-col class="text-right" cols="5" v-text="event.time"></v-col>
+                                <v-col cols="12">
+                                    <strong>tuankiet1708@gmail.com</strong>
+                                    &nbsp;
+                                    <span>{{event.time}}</span>
+                                    <br/>
+                                    <v-textarea
+                                        v-model="event.text"
+                                        readonly
+                                        no-resize
+                                        filled
+                                        shaped
+                                    />
+                                </v-col>
+                                <!-- <v-col class="text-right" cols="3" v-text="event.time"></v-col> -->
                             </v-row>
                         </v-timeline-item>
                     </v-slide-x-transition>
@@ -225,10 +242,12 @@
                         small
                     >
                         <v-row justify="space-between">
-                            <v-col cols="7">
-                                John Leider placed this order on Online Store (checkout #1937432132572).
+                            <v-col cols="9">
+                                <strong>tuankiet1708@gmail.com</strong>
+                                <br/>
+                                Something to do ...
                             </v-col>
-                            <v-col class="text-right" cols="5">
+                            <v-col class="text-right" cols="3">
                                 {{now}}
                             </v-col>
                         </v-row>
@@ -269,7 +288,86 @@
                         </v-file-input>
                     </v-col>
                 </v-row>
+
+                <v-row>
+                    <v-list-item
+                        v-for="item in items2"
+                        :key="item.title"
+                        @click=""
+                    >
+                        <v-list-item-avatar>
+                            <v-icon class="blue white--text">mdi-file</v-icon>
+                        </v-list-item-avatar>
+
+                        <v-list-item-content>
+                            <v-list-item-title v-text="item.title"></v-list-item-title>
+                            <v-list-item-subtitle v-text="item.subtitle"></v-list-item-subtitle>
+                        </v-list-item-content>
+
+                        <v-list-item-action>
+                            <v-btn icon>
+                                <v-icon color="grey lighten-1">mdi-download</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                    </v-list-item>
+                </v-row>
             </form>
+        </v-card-text>
+
+        <v-card-text v-if="context == 'report'">
+            <v-breadcrumbs :items="items4">
+                <template v-slot:item="{ item }">
+                    <v-breadcrumbs-item>
+                        <strong>{{ item.text.toUpperCase() }}</strong>
+                    </v-breadcrumbs-item>
+                </template>
+            </v-breadcrumbs>
+
+            <v-row>
+                <v-col
+                    v-for="(item, i) in items3"
+                    :key="i"
+                    cols="4"
+                >
+                    <v-card
+                        :color="item.color"
+                        dark
+                    >
+                        <div class="d-flex flex-no-wrap justify-space-between">
+                            <div>
+                                <v-card-title
+                                    class="headline"
+                                    v-text="item.title"
+                                ></v-card-title>
+
+                                <v-card-subtitle>
+                                    <h2>{{item.total}}</h2>
+                                </v-card-subtitle>
+                            </div>
+
+                            <!-- <v-avatar
+                                class="ma-3"
+                                size="125"
+                                tile
+                            >
+                                <v-img :src="item.src"></v-img>
+                            </v-avatar> -->
+                        </div>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col class="text-center">
+                    <v-btn
+                        rounded
+                        color="blue-grey"
+                        class="ma-2 white--text"
+                    >
+                        Download Report
+                        <v-icon right dark>mdi-cloud-download</v-icon>
+                    </v-btn>
+                </v-col>
+            </v-row>
         </v-card-text>
 
         <v-snackbar
@@ -313,9 +411,9 @@
         title: '',
         description: '',
         justification: '',
-        creator: null,
+        creator: 'tuankiet1708@gmail.com',
         created_at: null,
-        assigned_to: null,
+        assigned_to: 'tltkiet@gmail.com',
         files: [],
     };
 
@@ -351,16 +449,91 @@
         data: () => ({
             ...defaultData,
 
-            events: [],
+            events: [
+                {
+                    time: "08-13-2020 18:01:29",
+                    text: "Something to do ..."
+                }
+            ],
             input: null,
             nonce: 0,
             snackbar: false,
             hasError: false,
 
+            context: 'change',
             activeTab: 0,
             factoryItems: [],
             unitItems: [],
             systemItems: [],
+
+            items2: [
+                { title: 'Screening.docs', subtitle: moment().format("MM-DD-YYYY HH:mm:ss") },
+                { title: 'Screening.zip', subtitle: moment().format("MM-DD-YYYY HH:mm:ss") },
+            ],
+            items3: [
+                {
+                    color: 'blue',
+                    title: 'Open',
+                    total: 1,
+                },
+                {
+                    color: 'blue-grey',
+                    title: 'Screening',
+                    total: 1,
+                },
+                {
+                    color: 'blue-grey',
+                    title: 'Design',
+                    total: 0,
+                },
+                {
+                    color: 'blue-grey',
+                    title: 'Review',
+                    total: 0,
+                },
+                {
+                    color: 'blue-grey',
+                    title: 'Implementation',
+                    total: 0,
+                },
+                {
+                    color: 'blue-grey',
+                    title: 'Approval',
+                    total: 0,
+                },
+                {
+                    color: 'blue-grey',
+                    title: 'Update Documents',
+                    total: 0,
+                },
+                {
+                    color: 'success',
+                    title: 'Closed Out',
+                    total: 1,
+                },
+                {
+                    color: 'error',
+                    title: 'Cancelled',
+                    total: 0,
+                },
+            ],
+            items4: [
+                {
+                    text: 'Factory #1',
+                    disabled: false,
+                    href: 'breadcrumbs_dashboard',
+                },
+                {
+                    text: 'Unit #1',
+                    disabled: false,
+                    href: 'breadcrumbs_link_1',
+                },
+                {
+                    text: 'System #1',
+                    disabled: true,
+                    href: 'breadcrumbs_link_2',
+                },
+            ],
         }),
 
         mounted() {
@@ -382,15 +555,23 @@
 
         watch: {
             selectedNode: function (newValue, oldValue) {
-                if (newValue && newValue != oldValue && newValue.level === 3) {
+                if (newValue && newValue != oldValue) {
                     console.log('@@@ node changed @@@', newValue);
-                    this.loadData(newValue.id);
+
+                    if (newValue.level === 3) {
+                        this.loadData(newValue.id);
+                        this.context = 'change';
+                    }
+                    else if (newValue.level === 2) {
+                        this.context = 'report';
+                    }
                 }
             },
             buttonNewChangeClicked: function (newValue, oldValue) {
                 if (newValue.clicked && newValue.clicked != oldValue.clicked) {
                     this.clear();
                     this.activeTab = 0;
+                    this.context = "change";
                     this.factory = newValue.meta.factory;
                     this.unit = newValue.meta.unit;
                     this.system = newValue.meta.system;
@@ -471,6 +652,8 @@
                         });
 
                         this.created_at = moment(this.created_at).format("MM-DD-YYYY HH:mm:ss");
+                        this.creator = defaultData.creator;
+                        this.assigned_to = defaultData.assigned_to;
                     }
                 )
                 .catch(

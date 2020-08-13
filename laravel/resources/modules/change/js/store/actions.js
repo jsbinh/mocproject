@@ -9,3 +9,7 @@ export const selectNode = ({commit}, payload) => {
 export const toggleButtonNewChange = ({commit}, payload) => {
     commit('toggleButtonNewChange', payload);
 }
+
+export const changeData = ({commit}) => {
+    commit('changeData');
+}

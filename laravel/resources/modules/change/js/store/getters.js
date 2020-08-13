@@ -10,3 +10,7 @@ export const selectedNode = (state, getters) => {
 export const buttonNewChangeClicked = (state, getters) => {
     return state.buttonNewChangeClicked;
 }
+
+export const dataChanged = (state, getters) => {
+    return state.dataChanged;
+}

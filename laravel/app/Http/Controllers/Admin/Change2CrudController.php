@@ -51,7 +51,7 @@ class Change2CrudController extends ChangeCrudController
         ]);
     }
 
-    public function createChange(Request $request)
+    public function saveChange(Request $request)
     {
         $change = new Change;
         $fields = [

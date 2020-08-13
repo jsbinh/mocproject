@@ -3,7 +3,8 @@
 const state = {
     foo: 'bar',
     selectedNode: null,
-    buttonNewChangeClicked: false
+    buttonNewChangeClicked: false,
+    dataChanged: 0
 }
 
 export default state;

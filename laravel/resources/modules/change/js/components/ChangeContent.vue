@@ -67,6 +67,31 @@
 
                 <v-row class="mb-n6">
                     <v-col>
+                        <v-label>Status</v-label>
+                        <v-stepper alt-labels style="box-shadow:none;" value="5">
+                            <v-stepper-header>
+                                <v-stepper-step step="1" complete>Open</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="2" complete>Screening</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="3">Design</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="4">Review</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="5">Implementation</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="6">Approval</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="7">Documents</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="8">Closed/Cancelled</v-stepper-step>
+                            </v-stepper-header>
+                        </v-stepper>
+                    </v-col>
+                </v-row>
+
+                <v-row class="mb-n6">
+                    <v-col>
                         <v-text-field
                             v-model="title"
                             :error-messages="titleErrors"
@@ -87,6 +112,20 @@
                             label="Description"
                             @input="$v.description && $v.description.$touch()"
                             @blur="$v.description && $v.description.$touch()"
+                            outlined>
+                        </v-textarea>
+                    </v-col>
+                </v-row>
+
+                <v-row class="mb-n6">
+                    <v-col>
+                        <v-textarea
+                            v-model="justification"
+                            :error-messages="justificationErrors"
+                            label="Justification"
+                            required
+                            @input="$v.justification && $v.justification.$touch()"
+                            @blur="$v.justification && $v.justification.$touch()"
                             outlined>
                         </v-textarea>
                     </v-col>
@@ -188,6 +227,7 @@
         system: null,
         title: '',
         description: '',
+        justification: '',
         creator: null,
         created_at: null,
         assigned_to: null,
@@ -201,6 +241,9 @@
             title: {
                 required,
                 maxLength: maxLength(255)
+            },
+            justification: {
+                required
             },
             factory: {
                 required
@@ -272,6 +315,12 @@
                 !this.$v.title.required && errors.push('Title is required.');
                 return errors;
             },
+            justificationErrors() {
+                const errors = [];
+                if (!this.$v.justification.$dirty) return errors;
+                !this.$v.justification.required && errors.push('Justification is required.');
+                return errors;
+            },
             factoryErrors() {
                 const errors = [];
                 if (!this.$v.factory.$dirty) return errors;
@@ -293,11 +342,9 @@
         },
 
         methods: {
-            // ...mapActions({
-            //     setFoo (dispatch) {
-            //         dispatch('setFoo')
-            //     },
-            // }),
+            ...mapActions({
+                'changeData': 'changeData'
+            }),
             loadData(id) {
                 this.clear();
                 axios
@@ -338,7 +385,7 @@
                     error => void(0)
                 )
                 .then(
-                    () => void(0)
+                    () => this.changeData()
                 );
             },
             clear() {
@@ -355,3 +402,7 @@
     }
 
 </script>
+
+<style lang="scss">
+    .v-stepper__label {font-size: 10px !important;}
+</style>

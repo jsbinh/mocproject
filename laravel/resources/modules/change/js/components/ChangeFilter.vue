@@ -50,19 +50,14 @@
             caseSensitive: false,
         }),
         mounted() {
-            axios
-            .get(`${baseRoute}/web/change/tree`)
-            .then(
-                response => {
-                    this.items = _.get(response, 'data.data', []);
+            this.loadData();
+        },
+        watch: {
+            dataChanged: function (newValue, oldValue) {
+                if (newValue != oldValue) {
+                    this.loadData();
                 }
-            )
-            .catch(
-                error => void(0)
-            )
-            .then(
-                () => void(0)
-            );
+            }
         },
         methods: {
              ...mapActions({
@@ -76,12 +71,30 @@
                     dispatch('toggleButtonNewChange', false);
                 },
             }),
+            loadData() {
+                axios
+                .get(`${baseRoute}/web/change/tree`)
+                .then(
+                    response => {
+                        this.items = _.get(response, 'data.data', []);
+                    }
+                )
+                .catch(
+                    error => void(0)
+                )
+                .then(
+                    () => void(0)
+                );
+            },
             selectNode(node) {
                 // console.log("@@@ select node @@@", {...node[0]});
                 this.$store.dispatch('selectNode', {...node[0]});
             }
         },
         computed: {
+            ...mapGetters([
+                'dataChanged',
+            ]),
             filter() {
                 return this.caseSensitive ?
                     (item, search, textKey) => item[textKey].indexOf(search) > -1 :

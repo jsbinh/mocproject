@@ -7,6 +7,9 @@ const mutations = {
     },
     toggleButtonNewChange (state, value) {
         state.buttonNewChangeClicked = value;
+    },
+    changeData (state, value) {
+        state.dataChanged++;
     }
 }
 

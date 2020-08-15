@@ -45,5 +45,17 @@ window.utils = {
         const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10)
         if (i === 0) return `${bytes} ${sizes[i]})`
         return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`
+    },
+    findGetParameter: (parameterName) => {
+        let result = null,
+            tmp = [];
+        location.search
+            .substr(1)
+            .split("&")
+            .forEach(function (item) {
+              tmp = item.split("=");
+              if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+            });
+        return result;
     }
 }

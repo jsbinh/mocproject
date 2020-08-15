@@ -476,6 +476,11 @@
                     () => void(0) // always executed
                 );
             })
+
+            let id = utils.findGetParameter('id');
+            if (id) {
+                this.loadData(id);
+            }
         },
 
         watch: {

@@ -184,7 +184,7 @@
                 <v-timeline dense clipped>
                     <v-timeline-item
                         fill-dot
-                        class="white--text mb-12"
+                        class="white--text"
                         color="blue"
                         large
                     >
@@ -192,7 +192,7 @@
                             <v-icon center color="white">mdi-message-bulleted</v-icon>
                         </template>
                         <v-textarea
-                            v-model="input"
+                            v-model="inputComment"
                             label="Leave a comment..."
                             solo
                         >
@@ -208,24 +208,26 @@
                         </v-textarea>
                     </v-timeline-item>
 
-                    <v-slide-x-transition
-                        group
-                    >
+                    <v-slide-x-transition group>
                         <v-timeline-item
-                            v-for="event in timeline"
-                            :key="event.id"
-                            class="mb-4"
+                            v-for="item in timelineComments"
+                            :key="item.id"
                             color="blue"
-                            small
-                            >
+                            small>
                             <v-row justify="space-between">
                                 <v-col cols="12">
-                                    <strong>tuankiet1708@gmail.com</strong>
+                                    <span>
+                                        <v-icon>mdi-account</v-icon>
+                                        {{ lodash.get(item, 'user.email') }}
+                                    </span>
                                     &nbsp;
-                                    <span>{{event.time}}</span>
+                                    <span class="float-right">
+                                        <v-icon>mdi-calendar</v-icon>
+                                        {{ moment(item.created_at).format("MM-DD-YYYY HH:mm:ss") }}
+                                    </span>
                                     <br/>
                                     <v-textarea
-                                        v-model="event.text"
+                                        v-model="item.content"
                                         readonly
                                         no-resize
                                         filled
@@ -236,22 +238,6 @@
                             </v-row>
                         </v-timeline-item>
                     </v-slide-x-transition>
-
-                    <v-timeline-item
-                        color="grey"
-                        small
-                    >
-                        <v-row justify="space-between">
-                            <v-col cols="9">
-                                <strong>tuankiet1708@gmail.com</strong>
-                                <br/>
-                                Something to do ...
-                            </v-col>
-                            <v-col class="text-right" cols="3">
-                                {{now}}
-                            </v-col>
-                        </v-row>
-                    </v-timeline-item>
                 </v-timeline>
             </form>
 
@@ -292,7 +278,7 @@
                     <v-list-item
                         v-for="item in files"
                         :key="item.id"
-                        @click=""
+                        @click="() => null"
                     >
                         <v-list-item-avatar>
                             <v-icon class="blue white--text">mdi-file</v-icon>
@@ -300,8 +286,11 @@
 
                         <v-list-item-content>
                             <v-list-item-title v-text="item.name"></v-list-item-title>
-                            <v-list-item-subtitle>
+                            <v-list-item-subtitle class="mt-2">
+                                <v-icon>mdi-calendar</v-icon>
                                 {{ moment(item.created_at).format("MM-DD-YYYY HH:mm:ss") }}
+                                <v-icon class="ml-2">mdi-account</v-icon>
+                                {{ lodash.get(item, 'user.email') }}
                             </v-list-item-subtitle>
                         </v-list-item-content>
 
@@ -408,7 +397,6 @@
         maxLength,
         email
     } from 'vuelidate/lib/validators';
-    import moment from 'moment';
 
     const defaultData = {
         id: null,
@@ -422,6 +410,7 @@
         created_at: null,
         assigned_to: '',
         files: [],
+        comments: []
     };
 
     export default {
@@ -456,13 +445,7 @@
         data: () => ({
             ...defaultData,
 
-            events: [
-                {
-                    time: "08-13-2020 18:01:29",
-                    text: "Something to do ..."
-                }
-            ],
-            input: null,
+            inputComment: null,
             nonce: 0,
             snackbar: false,
             hasError: false,
@@ -473,7 +456,8 @@
             unitItems: [],
             systemItems: [],
             fileItems: null,
-            moment,
+            moment: window.moment,
+            lodash: window._,
 
             items3: [
                 {
@@ -595,13 +579,9 @@
                 'selectedNode',
                 'buttonNewChangeClicked'
             ]),
-            timeline() {
-                return this.events.slice().reverse()
+            timelineComments() {
+                return this.comments.slice().reverse()
             },
-            now() {
-                return moment().format("MM-DD-YYYY HH:mm:ss");
-            },
-
             titleErrors() {
                 const errors = [];
                 if (!this.$v.title.$dirty) return errors;
@@ -638,15 +618,32 @@
             ...mapActions({
                 'changeData': 'changeData'
             }),
+            showError () {
+                this.snackbar = true;
+                this.hasError = true;
+            },
+            showSuccess () {
+                this.snackbar = true;
+                this.hasError = false;
+            },
             comment () {
-                const time = (new Date()).toTimeString()
-                this.events.push({
-                    id: this.nonce++,
-                    text: this.input,
-                    time: moment().format("MM-DD-YYYY HH:mm:ss"),
-                })
+                axios
+                .post(`${baseRoute}/web/comment`, {change_id: this.id, content: this.inputComment})
+                .then(
+                    response => {
+                        //
+                        this.comments.push(response.data.data);
+                        this.showSuccess();
+                    }
+                )
+                .catch(
+                    error => this.showError()
+                )
+                .then(
+                    () => void(0)
+                );
 
-                this.input = null
+                this.inputComment = null
             },
 
             loadData(id) {
@@ -662,8 +659,6 @@
                         });
 
                         this.created_at = moment(this.created_at).format("MM-DD-YYYY HH:mm:ss");
-                        this.creator = defaultData.creator;
-                        this.assigned_to = defaultData.assigned_to;
                     }
                 )
                 .catch(
@@ -688,15 +683,11 @@
                     response => {
                         //
                         this.id = response.data.id;
-                        this.snackbar = true;
-                        this.hasError = false;
+                        this.showSuccess();
                     }
                 )
                 .catch(
-                    error => {
-                        this.snackbar = true;
-                        this.hasError = true;
-                    }
+                    error => this.showError()
                 )
                 .then(
                     () => this.changeData()
@@ -709,7 +700,7 @@
                 let formData = new FormData();
                 formData.append('file', file);
                 formData.append('meta', JSON.stringify({
-                    id: this.id
+                    change_id: this.id
                 }))
 
                 axios
@@ -718,12 +709,11 @@
                     response => {
                         //
                         this.files.push(response.data.data);
+                        this.showSuccess();
                     }
                 )
                 .catch(
-                    error => {
-
-                    }
+                    error => this.showError()
                 )
                 .then(
                     () => void(0)
@@ -739,12 +729,11 @@
                     response => {
                         //
                         this.files = _.filter(this.files, o => fileId !== o.id);
+                        this.showSuccess();
                     }
                 )
                 .catch(
-                    error => {
-
-                    }
+                    error => this.showError()
                 )
                 .then(
                     () => void(0)

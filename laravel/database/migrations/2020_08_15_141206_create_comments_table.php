@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAttachmentsTable extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateAttachmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('attachments', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->integer('change_id')->nullable();
             $table->integer('user_id')->nullable();
-            $table->string('name')->nullable();
-            $table->string('path')->nullable();
-            $table->text('description')->nullable();
-            $table->json('meta')->nullable();
+            $table->text('content')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreateAttachmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attachments');
+        Schema::dropIfExists('comments');
     }
 }

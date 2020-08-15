@@ -14,3 +14,5 @@
 <li class='nav-item'><a class='nav-link' href='{{ backpack_url('user') }}'><i class='nav-icon la la-users'></i> Users</a></li>
 
 {{-- <li class='nav-item'><a class='nav-link' href='{{ backpack_url('attachment') }}'><i class='nav-icon la la-question'></i> Attachments</a></li> --}}
+
+{{-- <li class='nav-item'><a class='nav-link' href='{{ backpack_url('comment') }}'><i class='nav-icon la la-question'></i> Comments</a></li> --}}

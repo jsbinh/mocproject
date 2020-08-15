@@ -30,6 +30,9 @@ Route::group([
             Route::get('/{id?}', 'Attachment2CrudController@download');
             Route::delete('/{id}', 'Attachment2CrudController@remove');
         });
+        Route::group(['prefix' => 'comment'], function() {
+            Route::post('/', 'Comment2CrudController@post');
+        });
     });
 
     Route::crud('tag', 'TagCrudController');
@@ -42,4 +45,5 @@ Route::group([
     Route::crud('unit', 'UnitCrudController');
     Route::crud('system', 'SystemCrudController');
     Route::crud('attachment', 'AttachmentCrudController');
+    Route::crud('comment', 'CommentCrudController');
 }); // this should be the absolute last line of this file

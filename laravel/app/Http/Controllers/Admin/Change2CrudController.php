@@ -7,6 +7,8 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Framework\Http\Requests\ChangeRequest;
 use Framework\Models\Attachment;
 use Framework\Models\Change;
+use Framework\Models\Comment;
+use Framework\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -91,8 +93,18 @@ class Change2CrudController extends ChangeCrudController
         $attachment = new Attachment;
         $files = $attachment->where('change_id', $id)->get()->toArray();
 
+        $users = array_key_by((new User)->get()->toArray(), 'id');
+        $files = array_map(function($file) use ($users) {
+            return $file + ['user' => $users[$file['user_id']]];
+        }, $files);
+
+        $comments = (new Comment)->where('change_id', $id)->get()->toArray();
+        $comments = array_map(function($comment) use ($users) {
+            return $comment + ['user' => $users[$comment['user_id']]];
+        }, $comments);
+
         return response()->json([
-            'data' => $data + compact('files')
+            'data' => $data + compact('files', 'comments')
         ]);
     }
 }

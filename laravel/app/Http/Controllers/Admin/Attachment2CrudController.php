@@ -20,10 +20,9 @@ class Attachment2CrudController extends AttachmentCrudController
         $file = $request->file;
         $path = $file->store('attachments/' . date('Ym', now()->timestamp));
 
-        $changeId = json_decode($request->input('meta'), true)['id'];
+        $changeId = json_decode($request->input('meta'), true)['change_id'];
         $meta = [
             'original_name' => $file->getClientOriginalName(),
-            'size' => $file->getSize(),
             'size' => $file->getSize(),
             'mime_type' => $file->getMimeType(),
             'time' => now()->timestamp
@@ -35,9 +34,10 @@ class Attachment2CrudController extends AttachmentCrudController
         $attachment->name = $meta['original_name'];
         $attachment->path = $path;
         $attachment->meta = json_encode($meta);
+        $attachment->user_id = backpack_user()->id;
         $attachment->save();
 
-        return response()->json(['data' => $attachment->toArray()]);
+        return response()->json(['data' => $attachment->toArray() + ['user' => backpack_user()]]);
     }
 
     public function download(Request $request, string $id = null)

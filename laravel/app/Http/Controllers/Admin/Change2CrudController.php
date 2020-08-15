@@ -7,7 +7,11 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Framework\Http\Requests\ChangeRequest;
 use Framework\Models\Attachment;
 use Framework\Models\Change;
+use Framework\Models\ChangeStatus;
 use Framework\Models\Comment;
+use Framework\Models\Factory;
+use Framework\Models\System;
+use Framework\Models\Unit;
 use Framework\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -105,6 +109,61 @@ class Change2CrudController extends ChangeCrudController
 
         return response()->json([
             'data' => $data + compact('files', 'comments')
+        ]);
+    }
+
+    public function report(Request $request)
+    {
+        $statuses = (new ChangeStatus)->get()->toArray();
+
+        $changes = (new Change)->where('factory', $factory = intval($request->input('factory')))
+                               ->where('unit', $unit = intval($request->input('unit')))
+                               ->where('system', $system = intval($request->input('system')))
+                               ->get()
+                               ->toArray();
+
+        $factory = (new Factory)->find($factory);
+        $unit = (new Unit)->find($unit);
+        $system = (new System)->find($system);
+
+        $result = [];
+
+        foreach ($statuses as $status) {
+            $total = count(array_filter($changes, function($item) use ($status) {
+                return $item['status_id'] === $status['id'];
+            }));
+
+            $result[] = [
+                'id' => $status['id'],
+                'title' => $status['name'],
+                'total' => $total,
+                // 'color' => ($status['id'] === 1 || $status['id'] === 2)
+                //             ? 'blue'
+                //             : (
+                //                 $status['id'] === 20 || $status['id'] === 24
+                //                 ? 'success'
+                //                 : (
+                //                     $status['id'] === 8
+                //                     ? 'error'
+                //                     : 'blue-grey'
+                //                 )
+                //             )
+                'color' => $total ? 'blue' : 'blue-grey'
+            ];
+        }
+
+        usort($result, function ($a, $b) {
+            if ($a['total'] == $b['total']) return 0;
+            return ($a['total'] > $b['total']) ? -1 : 1;
+        });
+
+        return response()->json([
+            'data' => $result,
+            'navigation' => [
+                ['text' => $factory->name],
+                ['text' => $unit->name],
+                ['text' => $system->name],
+            ]
         ]);
     }
 }

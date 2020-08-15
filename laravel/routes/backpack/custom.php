@@ -21,6 +21,7 @@ Route::group([
         Route::group(['prefix' => 'change'], function() {
             Route::get('/select-items/{item}', 'Change2CrudController@getSelectItems');
             Route::get('/tree', 'Change2CrudController@getTreeOfChanges');
+            Route::get('/report', 'Change2CrudController@report');
             Route::post('/', 'Change2CrudController@saveChange');
             // Route::put('/{id}', 'Change2CrudController@updateChange');
             Route::get('/{id}', 'Change2CrudController@viewChange');

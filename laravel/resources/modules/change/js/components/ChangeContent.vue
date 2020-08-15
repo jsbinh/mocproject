@@ -311,7 +311,7 @@
         </v-card-text>
 
         <v-card-text v-if="context == 'report'">
-            <v-breadcrumbs :items="items4">
+            <v-breadcrumbs :items="reportChartNavigation">
                 <template v-slot:item="{ item }">
                     <v-breadcrumbs-item>
                         <strong>{{ item.text.toUpperCase() }}</strong>
@@ -319,11 +319,23 @@
                 </template>
             </v-breadcrumbs>
 
+            <v-row v-if="reportChart.length">
+                <v-col class="text-center">
+                    <v-btn
+                        rounded
+                        color="blue-grey"
+                        class="ma-2 white--text"
+                    >
+                        Download Report
+                        <v-icon right dark>mdi-cloud-download</v-icon>
+                    </v-btn>
+                </v-col>
+            </v-row>
             <v-row>
                 <v-col
-                    v-for="(item, i) in items3"
+                    v-for="(item, i) in reportChart"
                     :key="i"
-                    cols="4"
+                    cols="6"
                 >
                     <v-card
                         :color="item.color"
@@ -331,9 +343,7 @@
                     >
                         <div class="d-flex flex-no-wrap justify-space-between">
                             <div>
-                                <v-card-title
-                                    class="headline"
-                                    v-text="item.title"
+                                <v-card-title v-text="item.title" style="font-size:16px;"
                                 ></v-card-title>
 
                                 <v-card-subtitle>
@@ -350,18 +360,6 @@
                             </v-avatar> -->
                         </div>
                     </v-card>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col class="text-center">
-                    <v-btn
-                        rounded
-                        color="blue-grey"
-                        class="ma-2 white--text"
-                    >
-                        Download Report
-                        <v-icon right dark>mdi-cloud-download</v-icon>
-                    </v-btn>
                 </v-col>
             </v-row>
         </v-card-text>
@@ -459,70 +457,8 @@
             moment: window.moment,
             lodash: window._,
 
-            items3: [
-                {
-                    color: 'blue',
-                    title: 'Open',
-                    total: 1,
-                },
-                {
-                    color: 'blue-grey',
-                    title: 'Screening',
-                    total: 1,
-                },
-                {
-                    color: 'blue-grey',
-                    title: 'Design',
-                    total: 0,
-                },
-                {
-                    color: 'blue-grey',
-                    title: 'Review',
-                    total: 0,
-                },
-                {
-                    color: 'blue-grey',
-                    title: 'Implementation',
-                    total: 0,
-                },
-                {
-                    color: 'blue-grey',
-                    title: 'Approval',
-                    total: 0,
-                },
-                {
-                    color: 'blue-grey',
-                    title: 'Update Documents',
-                    total: 0,
-                },
-                {
-                    color: 'success',
-                    title: 'Closed Out',
-                    total: 1,
-                },
-                {
-                    color: 'error',
-                    title: 'Cancelled',
-                    total: 0,
-                },
-            ],
-            items4: [
-                {
-                    text: 'Factory #1',
-                    disabled: false,
-                    href: 'breadcrumbs_dashboard',
-                },
-                {
-                    text: 'Unit #1',
-                    disabled: false,
-                    href: 'breadcrumbs_link_1',
-                },
-                {
-                    text: 'System #1',
-                    disabled: true,
-                    href: 'breadcrumbs_link_2',
-                },
-            ],
+            reportChart: [],
+            reportChartNavigation: [],
         }),
 
         mounted() {
@@ -552,6 +488,15 @@
                         this.context = 'change';
                     }
                     else if (newValue.level === 2) {
+                        this.reportChart = [];
+                        this.reportChartNavigation = [];
+                        const splits = _.split(newValue.id, '_');
+                        const meta = {
+                            factory: splits[1] >> 0,
+                            unit: splits[3] >> 0,
+                            system: splits[5] >> 0
+                        };
+                        this.loadReport(meta);
                         this.context = 'report';
                     }
                 }
@@ -659,6 +604,23 @@
                         });
 
                         this.created_at = moment(this.created_at).format("MM-DD-YYYY HH:mm:ss");
+                    }
+                )
+                .catch(
+                    error => void(0)
+                )
+                .then(
+                    () => void(0)
+                );
+            },
+            loadReport(meta) {
+                axios
+                .get(`${baseRoute}/web/change/report?factory=${meta.factory}&unit=${meta.unit}&system=${meta.system}`)
+                .then(
+                    response => {
+                        //
+                        this.reportChart = response.data.data;
+                        this.reportChartNavigation = response.data.navigation;
                     }
                 )
                 .catch(

@@ -9,7 +9,7 @@
       </input>
       <output id="Output_1" label="Next status" name="next_status" typeRef="string" />
       <output id="OutputClause_0onu48b" label="Allowed Statuses" name="allowed_statuses" typeRef="string" />
-      <output id="OutputClause_0nhyb5p" label="Approver" name="next_approver" typeRef="string" />
+      <output id="OutputClause_0nhyb5p" label="Assignee" name="next_assignee" typeRef="string" />
       <output id="OutputClause_1nwp8a9" label="Action" name="next_action" typeRef="string" />
       <rule id="DecisionRule_1qjv4zk">
         <inputEntry id="UnaryTests_1usw66q">
@@ -39,7 +39,7 @@
           <text>"Screening approved,Screening not approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1gc41hx">
-          <text>"tuankiet1708@gmail.com"</text>
+          <text>"tltkiet@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_166909h">
           <text>"send_mail_screening_progress"</text>
@@ -73,7 +73,7 @@
           <text>"Cancelled,Draft"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0034vs3">
-          <text>"tuankiet1708@gmail.com"</text>
+          <text>"tltkiet@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1bfxhky">
           <text>"send_mail_cancel_progress"</text>
@@ -108,7 +108,7 @@
           <text>"Technical reviewed ok,Technical reviewed not ok"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1be3n24">
-          <text>"tuankiet1708@gmail.com"</text>
+          <text>"tltkiet@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1dwg8cs">
           <text>"send_mail_technical_reviewal_progress"</text>
@@ -159,7 +159,7 @@
           <text>"Manager approved,Manager not approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1jv9lzz">
-          <text>"tuankiet1708@gmail.com"</text>
+          <text>"tltkiet@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_08x6nq9">
           <text>"send_mail_manager_approval_progress"</text>
@@ -210,7 +210,7 @@
           <text>"Closed,Close out not approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_186f1pl">
-          <text>"tuankiet1708@gmail.com"</text>
+          <text>"tltkiet@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_01dbbnb">
           <text>"send_mail_close_out_progress"</text>

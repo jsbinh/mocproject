@@ -88,6 +88,14 @@ class Change2CrudController extends ChangeCrudController
             $change->created_by_id = backpack_user()->id;
         }
 
+        if ($nextStatus = $request->input('assigned_status')) {
+            if (! is_numeric($nextStatus)) { // this is status name
+                $nextStatus = (new ChangeStatus)->where('name', $nextStatus)->first()->id;
+            }
+
+            $change->status_id = $nextStatus;
+        }
+
         // save to db
         $result = $change->save();
 

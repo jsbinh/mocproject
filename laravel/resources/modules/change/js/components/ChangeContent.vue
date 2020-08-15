@@ -68,7 +68,7 @@
 
                 <v-row class="mb-n6">
                     <v-col>
-                        <v-label>Status</v-label>
+                        <v-label>Status <strong class="text-primary">{{status}}</strong></v-label>
                         <v-stepper alt-labels style="box-shadow:none;" value="2">
                             <v-stepper-header>
                                 <v-stepper-step step="1" complete>Open</v-stepper-step>
@@ -159,7 +159,7 @@
                     <v-col cols="6">
                         <v-text-field
                             v-model="assigned_to"
-                            label="Assigned To"
+                            label="Assignment"
                             @input="$v.assigned_to && $v.assigned_to.$touch()"
                             @blur="$v.assigned_to && $v.assigned_to.$touch()"
                             outlined
@@ -173,9 +173,16 @@
                         <v-btn class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
                         <v-btn @click="clear">clear</v-btn>
                     </v-col>
-                    <v-col cols="8" class="text-sm-right">
-                        <v-btn class="mr-1 primary" @click="submit">Screening approved</v-btn>
-                        <v-btn class="error" @click="clear">Screening not approved</v-btn>
+                    <v-col cols="8" class="text-sm-right" v-if="status != 'Closed' && status != 'Cancelled'">
+                        <v-btn class="primary" @click="e => submit(e, 2)" v-if="status == 'Draft'">submit</v-btn>
+                        <!-- <v-btn class="mr-1 primary" @click="submit">Screening approved</v-btn>
+                        <v-btn class="error" @click="clear">Screening not approved</v-btn> -->
+
+                        <v-btn class="mr-1 primary" v-for="(item, index) in allowedStatuses"
+                            :key="index"
+                            @click="e => submit(e, item)">
+                            {{item}}
+                        </v-btn>
                     </v-col>
                 </v-row>
             </form>
@@ -398,6 +405,7 @@
 
     const defaultData = {
         id: null,
+        status: '',
         factory: null,
         unit: null,
         system: null,
@@ -407,6 +415,8 @@
         created_by: '',
         created_at: null,
         assigned_to: '',
+        flow: '',
+        flowJson: {},
         files: [],
         comments: []
     };
@@ -532,6 +542,10 @@
             timelineComments() {
                 return this.comments.slice().reverse()
             },
+            allowedStatuses() {
+                let list = _.get(this.flowJson, 'allowed_statuses', '');
+                return _.filter(_.split(list, ','));
+            },
             titleErrors() {
                 const errors = [];
                 if (!this.$v.title.$dirty) return errors;
@@ -609,6 +623,8 @@
                         });
 
                         this.created_at = moment(this.created_at).format("MM-DD-YYYY HH:mm:ss");
+                        this.flowJson = JSON.parse(this.flow);
+                        console.log("@@@ flow @@@", this.flowJson);
                     }
                 )
                 .catch(
@@ -635,7 +651,7 @@
                     () => void(0)
                 );
             },
-            submit() {
+            submit(e, status = null) {
                 this.$v.$touch();
 
                 if (this.$v.$error) return alert("Error! Please check the form.");
@@ -645,11 +661,12 @@
                 console.info("@@@ submit @@@", data);
 
                 axios
-                .post(`${baseRoute}/web/change`, data)
+                .post(`${baseRoute}/web/change`, {...data, assigned_status: status})
                 .then(
                     response => {
                         //
                         this.id = response.data.id;
+                        this.loadData(this.id);
                         this.showSuccess();
                     }
                 )

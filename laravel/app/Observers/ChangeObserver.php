@@ -81,8 +81,12 @@ class ChangeObserver
         if (empty($decisionValue)) return;
 
         $update = [];
+        $update['flow'] = json_encode($decisionValue);
+
         if ($decisionValue['next_assignee'] ?? null) {
             $update['assignee_id'] = (new User())->where('email', $decisionValue['next_assignee'])->first()->id;
+        } else {
+            $update['assignee_id'] = $data['created_by_id'];
         }
 
         if ($decisionValue['next_status'] ?? null) {
@@ -91,15 +95,27 @@ class ChangeObserver
             Mail::send(
                 'assignee-mail',
                 ['change_id' => $data['id']],
-                function ($message) use ($update, $data) {
+                function ($message) use ($update, $data, $decisionValue) {
                     $assigneeId = $update['assignee_id'] ?? $data['assignee_id'];
-                    $message->to((new User())->where('id', $assigneeId)->first()->email)
-                            ->subject("[Change #{$data['id']}] To-do Mail");
+
+                    $mailAction = $decisionValue['next_action'] ?? '';
+
+                    $actionMaps = [
+                        'send_mail_screening_progress' => 'Screening Process',
+                        'send_mail_cancel_progress' => 'Cancel Process',
+                        'send_mail_technical_reviewal_progress' => 'Technical Reviewal Process',
+                        'send_mail_manager_approval_progress' => 'Manager Approval Process',
+                        'send_mail_close_out_progress' => 'Close Out Process'
+                    ];
+
+                    $message->to(array_values(array_unique([
+                        (new User())->where('id', $assigneeId)->first()->email,
+                        (new User())->where('id', $data['created_by_id'])->first()->email
+                    ])))
+                            ->subject("[Change #{$data['id']}] " . ($actionMaps[$mailAction] ?? 'Change Notifcation'));
                 }
             );
         }
-
-        $update['flow'] = json_encode($decisionValue);
 
         // if ($decisionValue['next_action'] ?? null == 'send_approval_mail') {
         //     // Log::info('SEND APPROVAL MAIL');

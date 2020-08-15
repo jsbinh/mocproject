@@ -112,9 +112,9 @@
 </script>
 
 <style lang="scss" scoped>
-// .tree-container {
-//     max-height: calc(100vh - 208px);
-//     // max-height: 787px;
-//     overflow-y: auto;
-// }
+.tree-container {
+    max-height: calc(100vh - 208px);
+    // max-height: 787px;
+    overflow-y: auto;
+}
 </style>

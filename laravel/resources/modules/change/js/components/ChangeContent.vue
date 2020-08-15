@@ -266,8 +266,7 @@
                             placeholder="Select your files"
                             prepend-icon="mdi-paperclip"
                             outlined
-                            :show-size="1000"
-                        >
+                            :show-size="1000">
                             <template v-slot:selection="{ index, text }">
                                 <v-chip
                                     v-if="index < 2"
@@ -374,8 +373,7 @@
             v-model="snackbar"
             :color="hasError ? 'error' : 'success'"
             :timeout="5000"
-            :top="true"
-        >
+            :top="true">
             {{ hasError ? "Something went wrong. Please try again." : "Save successfully." }}
 
             <template v-slot:action="{ attrs }">
@@ -576,6 +574,11 @@
                     this.unit = newValue.meta.unit;
                     this.system = newValue.meta.system;
                 }
+            },
+            files: function(newValue, oldValue) {
+                newValue && newValue.forEach(file => {
+                    this.upload(file);
+                })
             }
         },
 
@@ -690,6 +693,33 @@
                 )
                 .then(
                     () => this.changeData()
+                );
+            },
+            upload(file) {
+                const config = {
+                    headers: { 'content-type': 'multipart/form-data' }
+                }
+                let formData = new FormData();
+                formData.append('file', file);
+                formData.append('meta', JSON.stringify({
+                    id: this.id
+                }))
+
+                axios
+                .post(`${baseRoute}/web/attachment`,  formData, config)
+                .then(
+                    response => {
+                        //
+                        dd(response);
+                    }
+                )
+                .catch(
+                    error => {
+
+                    }
+                )
+                .then(
+                    () => void(0)
                 );
             },
             clear() {

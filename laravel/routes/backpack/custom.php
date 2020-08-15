@@ -25,6 +25,10 @@ Route::group([
             // Route::put('/{id}', 'Change2CrudController@updateChange');
             Route::get('/{id}', 'Change2CrudController@viewChange');
         });
+        Route::group(['prefix' => 'attachment'], function() {
+            Route::post('/', 'Attachment2CrudController@upload');
+            Route::get('/{id?}', 'Attachment2CrudController@download');
+        });
     });
 
     Route::crud('tag', 'TagCrudController');
@@ -36,4 +40,5 @@ Route::group([
     Route::crud('factory', 'FactoryCrudController');
     Route::crud('unit', 'UnitCrudController');
     Route::crud('system', 'SystemCrudController');
+    Route::crud('attachment', 'AttachmentCrudController');
 }); // this should be the absolute last line of this file

@@ -256,10 +256,10 @@
             </form>
 
             <form v-if="activeTab === 2" onsubmit="return false">
-                <v-row class="mb-n6">
+                <v-row>
                     <v-col>
                         <v-file-input
-                            v-model="files"
+                            v-model="fileItems"
                             counter
                             label="File input"
                             multiple
@@ -281,7 +281,7 @@
                                     v-else-if="index === 2"
                                     class="overline grey--text text--darken-3 mx-2"
                                 >
-                                    +{{ files.length - 2 }} File(s)
+                                    +{{ fileItems.length - 2 }} File(s)
                                 </span>
                             </template>
                         </v-file-input>
@@ -290,8 +290,8 @@
 
                 <v-row>
                     <v-list-item
-                        v-for="item in items2"
-                        :key="item.title"
+                        v-for="item in files"
+                        :key="item.id"
                         @click=""
                     >
                         <v-list-item-avatar>
@@ -299,13 +299,21 @@
                         </v-list-item-avatar>
 
                         <v-list-item-content>
-                            <v-list-item-title v-text="item.title"></v-list-item-title>
-                            <v-list-item-subtitle v-text="item.subtitle"></v-list-item-subtitle>
+                            <v-list-item-title v-text="item.name"></v-list-item-title>
+                            <v-list-item-subtitle>
+                                {{ moment(item.created_at).format("MM-DD-YYYY HH:mm:ss") }}
+                            </v-list-item-subtitle>
                         </v-list-item-content>
 
                         <v-list-item-action>
-                            <v-btn icon>
-                                <v-icon color="grey lighten-1">mdi-download</v-icon>
+                            <v-btn icon @click="e => download(e, item.id)">
+                                <v-icon color="info">mdi-download</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+
+                        <v-list-item-action>
+                            <v-btn icon @click="e => deleteFile(e, item.id)">
+                                <v-icon color="error">mdi-minus-circle-outline</v-icon>
                             </v-btn>
                         </v-list-item-action>
                     </v-list-item>
@@ -400,6 +408,7 @@
         maxLength,
         email
     } from 'vuelidate/lib/validators';
+    import moment from 'moment';
 
     const defaultData = {
         id: null,
@@ -409,9 +418,9 @@
         title: '',
         description: '',
         justification: '',
-        creator: 'tuankiet1708@gmail.com',
+        creator: '',
         created_at: null,
-        assigned_to: 'tltkiet@gmail.com',
+        assigned_to: '',
         files: [],
     };
 
@@ -463,11 +472,9 @@
             factoryItems: [],
             unitItems: [],
             systemItems: [],
+            fileItems: null,
+            moment,
 
-            items2: [
-                { title: 'Screening.docs', subtitle: moment().format("MM-DD-YYYY HH:mm:ss") },
-                { title: 'Screening.zip', subtitle: moment().format("MM-DD-YYYY HH:mm:ss") },
-            ],
             items3: [
                 {
                     color: 'blue',
@@ -575,7 +582,7 @@
                     this.system = newValue.meta.system;
                 }
             },
-            files: function(newValue, oldValue) {
+            fileItems: function(newValue, oldValue) {
                 newValue && newValue.forEach(file => {
                     this.upload(file);
                 })
@@ -710,7 +717,28 @@
                 .then(
                     response => {
                         //
-                        dd(response);
+                        this.files.push(response.data.data);
+                    }
+                )
+                .catch(
+                    error => {
+
+                    }
+                )
+                .then(
+                    () => void(0)
+                );
+            },
+            download(e, fileId) {
+                window.open(`${baseRoute}/web/attachment/${fileId}`, "_blank");
+            },
+            deleteFile(e, fileId) {
+                axios
+                .delete(`${baseRoute}/web/attachment/${fileId}`)
+                .then(
+                    response => {
+                        //
+                        this.files = _.filter(this.files, o => fileId !== o.id);
                     }
                 )
                 .catch(
@@ -725,8 +753,9 @@
             clear() {
                 this.$v.$reset();
 
-                _.keys(defaultData).map(key => {
-                    this[key] = _.get(defaultData, key);
+                const clonedDefault = {...defaultData};
+                _.keys(clonedDefault).map(key => {
+                    this[key] = _.get(clonedDefault, key);
                 });
             },
             onChangeTab(index) {

@@ -28,6 +28,7 @@ Route::group([
         Route::group(['prefix' => 'attachment'], function() {
             Route::post('/', 'Attachment2CrudController@upload');
             Route::get('/{id?}', 'Attachment2CrudController@download');
+            Route::delete('/{id}', 'Attachment2CrudController@remove');
         });
     });
 

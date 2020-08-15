@@ -5,6 +5,7 @@ namespace Framework\Http\Controllers\Admin;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Framework\Http\Requests\ChangeRequest;
+use Framework\Models\Attachment;
 use Framework\Models\Change;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -86,8 +87,12 @@ class Change2CrudController extends ChangeCrudController
     {
         $model = new Change;
         $data = $model->where('id', intval($id))->first()->toArray();
+
+        $attachment = new Attachment;
+        $files = $attachment->where('change_id', $id)->get()->toArray();
+
         return response()->json([
-            'data' => $data
+            'data' => $data + compact('files')
         ]);
     }
 }

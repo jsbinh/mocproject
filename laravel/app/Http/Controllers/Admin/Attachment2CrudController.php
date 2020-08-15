@@ -37,12 +37,7 @@ class Attachment2CrudController extends AttachmentCrudController
         $attachment->meta = json_encode($meta);
         $attachment->save();
 
-        return response()->json([
-            'id' => $attachment->id,
-            'change_id' => $changeId,
-            'path' => $path,
-            'created_at' => $attachment->created_at,
-        ] + $meta);
+        return response()->json(['data' => $attachment->toArray()]);
     }
 
     public function download(Request $request, string $id = null)
@@ -57,5 +52,10 @@ class Attachment2CrudController extends AttachmentCrudController
         }
 
         return Storage::download($path);
+    }
+
+    public function remove(Request $request, string $id)
+    {
+        return response()->json(['result' => (new Attachment)->find($id)->delete()]);
     }
 }

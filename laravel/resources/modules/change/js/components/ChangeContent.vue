@@ -135,10 +135,10 @@
                 <v-row class="mb-n6">
                     <v-col>
                         <v-text-field
-                            v-model="creator"
+                            v-model="created_by"
                             label="Creator"
-                            @input="$v.creator && $v.creator.$touch()"
-                            @blur="$v.creator && $v.creator.$touch()"
+                            @input="$v.created_by && $v.created_by.$touch()"
+                            @blur="$v.created_by && $v.created_by.$touch()"
                             outlined
                             disabled>
                         </v-text-field>
@@ -404,7 +404,7 @@
         title: '',
         description: '',
         justification: '',
-        creator: '',
+        created_by: '',
         created_at: null,
         assigned_to: '',
         files: [],

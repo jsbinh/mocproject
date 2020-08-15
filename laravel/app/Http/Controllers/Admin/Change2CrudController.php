@@ -83,6 +83,11 @@ class Change2CrudController extends ChangeCrudController
             $change->{$field} = $request->input($field);
         }
 
+        if (empty($id)) {
+            $change->status_id = 1; // Draft
+            $change->created_by_id = backpack_user()->id;
+        }
+
         // save to db
         $result = $change->save();
 
@@ -107,8 +112,12 @@ class Change2CrudController extends ChangeCrudController
             return $comment + ['user' => $users[$comment['user_id']]];
         }, $comments);
 
+        $created_by = $users[$data['created_by_id']]['email'] ?? null;
+        $assigned_to = $users[$data['assignee_id']]['email'] ?? null;
+        $status = (new ChangeStatus)->find($data['status_id'] ?? 1)->name;
+
         return response()->json([
-            'data' => $data + compact('files', 'comments')
+            'data' => $data + compact('files', 'comments', 'created_by', 'assigned_to', 'status')
         ]);
     }
 

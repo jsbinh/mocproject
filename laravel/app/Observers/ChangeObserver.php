@@ -25,9 +25,6 @@ class ChangeObserver
         $data['status_id'] = isset($data['status_id'])
                                 ? intval($data['status_id'])
                                 : null;
-        $data['approver_id'] = isset($data['approver_id'])
-                                ? intval($data['approver_id'])
-                                : null;
         $data['assignee_id'] = isset($data['assignee_id'])
                                 ? intval($data['assignee_id'])
                                 : null;
@@ -84,34 +81,37 @@ class ChangeObserver
         if (empty($decisionValue)) return;
 
         $update = [];
+        if ($decisionValue['next_assignee'] ?? null) {
+            $update['assignee_id'] = (new User())->where('email', $decisionValue['next_assignee'])->first()->id;
+        }
+
         if ($decisionValue['next_status'] ?? null) {
             $update['status_id'] = (new ChangeStatus())->where('name', $decisionValue['next_status'])->first()->id;
 
-            if ($decisionValue['next_status'] == 'In-progress') {
-                Mail::send(
-                    'assignee-mail',
-                    ['change_id' => $data['id']],
-                    function ($message) use ($data) {
-                        $message->to((new User())->where('id', $data['assignee_id'])->first()->email)
-                                ->subject("[Change #{$data['id']}] To-do Mail");
-                    }
-                );
-            }
-        }
-        if ($decisionValue['next_approver'] ?? null) {
-            $update['approver_id'] = (new User())->where('email', $decisionValue['next_approver'])->first()->id;
-        }
-        if ($decisionValue['next_action'] ?? null == 'send_approval_mail') {
-            // Log::info('SEND APPROVAL MAIL');
             Mail::send(
-                'approval-mail',
+                'assignee-mail',
                 ['change_id' => $data['id']],
-                function ($message) use ($decisionValue, $data) {
-                    $message->to($decisionValue['next_approver'])
-                            ->subject("[Change #{$data['id']}] Approval Mail");
+                function ($message) use ($update, $data) {
+                    $assigneeId = $update['assignee_id'] ?? $data['assignee_id'];
+                    $message->to((new User())->where('id', $assigneeId)->first()->email)
+                            ->subject("[Change #{$data['id']}] To-do Mail");
                 }
             );
         }
+
+        $update['flow'] = json_encode($decisionValue);
+
+        // if ($decisionValue['next_action'] ?? null == 'send_approval_mail') {
+        //     // Log::info('SEND APPROVAL MAIL');
+        //     Mail::send(
+        //         'approval-mail',
+        //         ['change_id' => $data['id']],
+        //         function ($message) use ($decisionValue, $data) {
+        //             $message->to($decisionValue['next_approver'])
+        //                     ->subject("[Change #{$data['id']}] Approval Mail");
+        //         }
+        //     );
+        // }
 
         (new Change())->where('id', $data['id'])
                       ->update([
@@ -127,12 +127,6 @@ class ChangeObserver
             $data['status'] = (new ChangeStatus())->where('id', $data['status_id'])->first()->name;
         } else {
             $data['status'] = '';
-        }
-
-        if ($data['approver_id']) {
-            $data['approver'] = (new User())->where('id', $data['approver_id'])->first()->email;
-        } else {
-            $data['approver'] = '';
         }
 
         if ($data['assignee_id']) {

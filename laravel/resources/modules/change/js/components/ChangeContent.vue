@@ -69,23 +69,25 @@
                 <v-row class="mb-n6">
                     <v-col>
                         <v-label>Status <strong class="text-primary">{{status}}</strong></v-label>
-                        <v-stepper alt-labels style="box-shadow:none;" value="2">
+                        <v-stepper alt-labels style="box-shadow:none;" :value="statusValue">
                             <v-stepper-header>
-                                <v-stepper-step step="1" complete>Open</v-stepper-step>
+                                <v-stepper-step step="0" :complete="statusValue >= 0">Draft</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="2">Screening</v-stepper-step>
+                                <v-stepper-step step="1" :complete="statusValue >= 1">Open</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="3">Design</v-stepper-step>
+                                <v-stepper-step step="2" :complete="statusValue >= 2">Screening</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="4">Review</v-stepper-step>
+                                <v-stepper-step step="3" :complete="statusValue >= 3">Design</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="5">Implementation</v-stepper-step>
+                                <v-stepper-step step="4" :complete="statusValue >= 4">Review</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="6">Approval</v-stepper-step>
+                                <v-stepper-step step="5" :complete="statusValue >= 5">Implementation</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="7">Documents</v-stepper-step>
+                                <v-stepper-step step="6" :complete="statusValue >= 6">Approval</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="8">Closed/Cancelled</v-stepper-step>
+                                <v-stepper-step step="7" :complete="statusValue >= 7">Documents</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="8" :complete="statusValue >= 8">Closed/Cancelled</v-stepper-step>
                             </v-stepper-header>
                         </v-stepper>
                     </v-col>
@@ -545,6 +547,53 @@
             allowedStatuses() {
                 let list = _.get(this.flowJson, 'allowed_statuses', '');
                 return _.filter(_.split(list, ','));
+            },
+            statusValue() {
+                switch (this.status) {
+                    case "Draft":
+                        return 0;
+
+                    case "Open":
+                        return 1;
+
+                    case "Screening progress":
+                    case "Screening approved":
+                    case "Screening not approved":
+                        return 2;
+
+                    case "Design progress":
+                        return 3;
+
+                    case "Waiting for technical reviewal":
+                    case "Technical reviewal progress":
+                    case "Technical reviewed ok":
+                    case "Technical reviewed not ok":
+                        return 4;
+
+                    case "Implementation progress":
+                        return 5;
+
+                    case "Waiting for manager approval":
+                    case "Manager approval progress":
+                    case "Manager approved":
+                    case "Manager not approved":
+                        return 6;
+
+                    case "Update documents progress":
+                        return 7;
+
+                    case "Close out":
+                    case "Close out progress":
+                    case "Close out not approved":
+                    case "Close out approved":
+                    case "Cancel progress":
+                    case "Cancelled":
+                    case "Closed":
+                        return 8;
+
+                    default:
+                        return 0;
+                }
             },
             titleErrors() {
                 const errors = [];

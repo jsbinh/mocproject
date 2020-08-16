@@ -644,6 +644,9 @@
                 this.hasError = false;
             },
             comment () {
+                if (! this.id) {
+                    return alert("Please create a new change first.");
+                }
                 axios
                 .post(`${baseRoute}/web/comment`, {change_id: this.id, content: this.inputComment})
                 .then(
@@ -731,6 +734,10 @@
                 );
             },
             upload(file) {
+                if (! this.id) {
+                    return alert("Please create a new change first.");
+                }
+
                 const config = {
                     headers: { 'content-type': 'multipart/form-data' }
                 }

@@ -14,8 +14,8 @@ use Framework\Http\Requests\ChangeRequest;
 class ChangeCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+    // use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
     // use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\FetchOperation;
@@ -30,6 +30,7 @@ class ChangeCrudController extends CrudController
         CRUD::setModel(\Framework\Models\Change::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/change');
         CRUD::setEntityNameStrings('change', 'changes');
+
     }
 
     /**
@@ -48,7 +49,7 @@ class ChangeCrudController extends CrudController
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
 
-        CRUD::addColumns(['id', 'title']); // add multiple columns, at the end of the stack
+        CRUD::addColumns(['id', 'title', 'description', 'justification']); // add multiple columns, at the end of the stack
 
         CRUD::addColumn([
             'label'          => 'Status', // Table column heading
@@ -60,15 +61,15 @@ class ChangeCrudController extends CrudController
             'visibleInModal' => false,
         ]);
 
-        CRUD::addColumn([
-            'label'          => 'Approver', // Table column heading
-            'type'           => 'select',
-            'name'           => 'approver_id', // the column that contains the ID of that connected entity;
-            'entity'         => 'approver', // the method that defines the relationship in your Model
-            'attribute'      => 'email', // foreign key attribute that is shown to user
-            'visibleInTable' => true,
-            'visibleInModal' => false,
-        ]);
+        // CRUD::addColumn([
+        //     'label'          => 'Approver', // Table column heading
+        //     'type'           => 'select',
+        //     'name'           => 'approver_id', // the column that contains the ID of that connected entity;
+        //     'entity'         => 'approver', // the method that defines the relationship in your Model
+        //     'attribute'      => 'email', // foreign key attribute that is shown to user
+        //     'visibleInTable' => true,
+        //     'visibleInModal' => false,
+        // ]);
 
         CRUD::addColumn([
             'label'          => 'Assignee', // Table column heading
@@ -84,6 +85,7 @@ class ChangeCrudController extends CrudController
 
         $this->crud->enableExportButtons();
         $this->addCustomCrudFilters();
+        $this->crud->disablePersistentTable();
     }
 
     /**
@@ -236,24 +238,54 @@ class ChangeCrudController extends CrudController
             $this->crud->addClause('where', 'status_id', $value);
         });
 
+        // $this->crud->addFilter([ // select2 filter
+        //     'name' => 'assignee',
+        //     'type' => 'select2',
+        //     'label'=> 'Assignee',
+        // ], function () {
+        //     return \Framework\User::all()->keyBy('id')->pluck('email', 'id')->toArray();
+        // }, function ($value) { // if the filter is active
+        //     $this->crud->addClause('where', 'assignee_id', $value);
+        // });
+
+        // $this->crud->addFilter([ // select2 filter
+        //     'name' => 'approver',
+        //     'type' => 'select2',
+        //     'label'=> 'Approver',
+        // ], function () {
+        //     return \Framework\User::all()->keyBy('id')->pluck('email', 'id')->toArray();
+        // }, function ($value) { // if the filter is active
+        //     $this->crud->addClause('where', 'approver_id', $value);
+        // });
+
         $this->crud->addFilter([ // select2 filter
-            'name' => 'assignee',
+            'name' => 'factory',
             'type' => 'select2',
-            'label'=> 'Assignee',
+            'label'=> 'Factory',
         ], function () {
-            return \Framework\User::all()->keyBy('id')->pluck('email', 'id')->toArray();
+            return \Framework\Models\Factory::all()->keyBy('id')->pluck('name', 'id')->toArray();
         }, function ($value) { // if the filter is active
-            $this->crud->addClause('where', 'assignee_id', $value);
+            $this->crud->addClause('where', 'factory', $value);
         });
 
         $this->crud->addFilter([ // select2 filter
-            'name' => 'approver',
+            'name' => 'unit',
             'type' => 'select2',
-            'label'=> 'Approver',
+            'label'=> 'Unit',
         ], function () {
-            return \Framework\User::all()->keyBy('id')->pluck('email', 'id')->toArray();
+            return \Framework\Models\Unit::all()->keyBy('id')->pluck('name', 'id')->toArray();
         }, function ($value) { // if the filter is active
-            $this->crud->addClause('where', 'approver_id', $value);
+            $this->crud->addClause('where', 'unit', $value);
+        });
+
+        $this->crud->addFilter([ // select2 filter
+            'name' => 'system',
+            'type' => 'select2',
+            'label'=> 'System',
+        ], function () {
+            return \Framework\Models\System::all()->keyBy('id')->pluck('name', 'id')->toArray();
+        }, function ($value) { // if the filter is active
+            $this->crud->addClause('where', 'system', $value);
         });
 
     }

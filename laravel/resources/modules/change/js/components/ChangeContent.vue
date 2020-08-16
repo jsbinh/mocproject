@@ -334,9 +334,11 @@
                         rounded
                         color="blue-grey"
                         class="ma-2 white--text"
+                        :href="reportLink" target="_blank"
                     >
-                        Download Report
-                        <v-icon right dark>mdi-cloud-download</v-icon>
+                        View List
+                        <!-- <v-icon right dark>mdi-cloud-download</v-icon> -->
+                        <v-icon right dark>mdi-format-list-text</v-icon>
                     </v-btn>
                 </v-col>
             </v-row>
@@ -471,6 +473,7 @@
 
             reportChart: [],
             reportChartNavigation: [],
+            reportLink: ''
         }),
 
         mounted() {
@@ -513,6 +516,7 @@
                             unit: splits[3] >> 0,
                             system: splits[5] >> 0
                         };
+                        this.reportLink = `${baseRoute}/change?factory=${meta.factory}&unit=${meta.unit}&system=${meta.system}`;
                         this.loadReport(meta);
                         this.context = 'report';
                     }

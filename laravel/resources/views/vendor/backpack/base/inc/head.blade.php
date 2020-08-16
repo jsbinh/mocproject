@@ -24,6 +24,23 @@
     @yield('after_styles')
     @stack('after_styles')
 
+    <script>
+        var baseRoute = "/{{ config('backpack.base.route_prefix', 'admin') }}";
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (document.location.pathname === baseRoute + '/change') {
+                setTimeout(function() {
+                    $("#crudTable tr td:last-child a").click(function(e) {
+                        e.preventDefault();
+                        var changeId = $(this).parent().parent().find('td:first-child span').html().trim() >> 0;
+                        // window.location.href = baseRoute + "/change2?id=" + changeId;
+                        window.open(`${baseRoute}/change2?id=${changeId}`, "_blank");
+                    })
+                }, 2000);
+            }
+        });
+    </script>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

@@ -29,16 +29,19 @@ class Change extends Model
         $modelFactory = new Factory;
         $modelUnit = new Unit;
         $modelSystem = new System;
+        $changeStatus = new ChangeStatus;
 
         $factories = $modelFactory->get()->toArray();
         $units = $modelUnit->get()->toArray();
         $systems = $modelSystem->get()->toArray();
+        $statuses = $changeStatus->get()->toArray();
 
         $factories = array_key_by($factories, 'id');
         $units = array_key_by($units, 'id');
         $systems = array_key_by($systems, 'id');
+        $statuses = array_key_by($statuses, 'id');
 
-        $changes = $this->get(['id', 'title', 'factory', 'unit', 'system'])->toArray();
+        $changes = $this->get(['id', 'title', 'factory', 'unit', 'system', 'status_id'])->toArray();
 
         $tree = [];
 
@@ -61,7 +64,13 @@ class Change extends Model
             $tree[$factory]['children'][$unit]['children'][$system]['level'] = 2;
             $tree[$factory]['children'][$unit]['children'][$system]['children'][] = $change + [
                 'level' => 3,
-                'name' => 'C' . str_pad($change['id'], 6, '0', STR_PAD_LEFT) . ' - ' . $change['title'],
+                'name' => 'C' . str_pad($change['id'], 6, '0', STR_PAD_LEFT)
+                            . ' - ' . $change['title']
+                            . (
+                                ($statuses[$change['status_id']]['name'] ?? null)
+                                ? ' (' . $statuses[$change['status_id']]['name'] . ')'
+                                : ''
+                            ),
                 'children' => []
             ];
         }

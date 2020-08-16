@@ -93,7 +93,6 @@
 @push('after_scripts')
   <script>
       jQuery(document).ready(function($) {
-          var baseRoute = "/{{ config('backpack.base.route_prefix', 'admin') }}";
           // trigger select2 for each untriggered select2 box
           $('.change-status-2').on('click', function() {
             window.location.href = baseRoute + "/change?status=2";

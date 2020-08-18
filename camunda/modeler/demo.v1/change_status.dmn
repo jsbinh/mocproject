@@ -39,7 +39,7 @@
           <text>"Screening approved,Screening not approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1gc41hx">
-          <text>"tltkiet@gmail.com"</text>
+          <text>"camunda.u1@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_166909h">
           <text>"send_mail_screening_progress"</text>
@@ -73,7 +73,7 @@
           <text>"Cancelled,Draft"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0034vs3">
-          <text>"tltkiet@gmail.com"</text>
+          <text>"camunda.u2@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1bfxhky">
           <text>"send_mail_cancel_progress"</text>
@@ -108,7 +108,7 @@
           <text>"Technical reviewed ok,Technical reviewed not ok"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1be3n24">
-          <text>"tltkiet@gmail.com"</text>
+          <text>"camunda.u3@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1dwg8cs">
           <text>"send_mail_technical_reviewal_progress"</text>
@@ -159,7 +159,7 @@
           <text>"Manager approved,Manager not approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1jv9lzz">
-          <text>"tltkiet@gmail.com"</text>
+          <text>"camunda.u4@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_08x6nq9">
           <text>"send_mail_manager_approval_progress"</text>
@@ -210,7 +210,7 @@
           <text>"Closed,Close out not approved"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_186f1pl">
-          <text>"tltkiet@gmail.com"</text>
+          <text>"camunda.u5@gmail.com"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_01dbbnb">
           <text>"send_mail_close_out_progress"</text>

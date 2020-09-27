@@ -507,7 +507,7 @@
                         this.loadData(newValue.id);
                         this.context = 'change';
                     }
-                    else if (newValue.level === 2) {
+                    else {
                         this.reportChart = [];
                         this.reportChartNavigation = [];
                         const splits = _.split(newValue.id, '_');
@@ -516,7 +516,11 @@
                             unit: splits[3] >> 0,
                             system: splits[5] >> 0
                         };
-                        this.reportLink = `${baseRoute}/change?factory=${meta.factory}&unit=${meta.unit}&system=${meta.system}`;
+                        let linkTags = [`factory=${meta.factory}`];
+                        if (meta.unit) linkTags.push(`unit=${meta.unit}`);
+                        if (meta.system) linkTags.push(`system=${meta.system}`);
+                        this.reportLink = `${baseRoute}/change?${linkTags.join('&')}`;
+                        // console.log('@@@ linkTags @@@', linkTags, this.reportLink);
                         this.loadReport(meta);
                         this.context = 'report';
                     }

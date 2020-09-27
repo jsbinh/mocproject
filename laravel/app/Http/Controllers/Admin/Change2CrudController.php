@@ -133,9 +133,18 @@ class Change2CrudController extends ChangeCrudController
     {
         $statuses = (new ChangeStatus)->get()->toArray();
 
-        $changes = (new Change)->where('factory', $factory = intval($request->input('factory')))
-                               ->where('unit', $unit = intval($request->input('unit')))
-                               ->where('system', $system = intval($request->input('system')))
+        $factory = intval($request->input('factory'));
+        $where = ['factory'];
+
+        $unit = intval($request->input('unit'));
+        if ($unit) $where[] = 'unit';
+
+        $system = intval($request->input('system'));
+        if ($system) $where[] = 'system';
+
+        $where = compact(...$where);
+
+        $changes = (new Change)->where($where)
                                ->get()
                                ->toArray();
 
@@ -174,13 +183,15 @@ class Change2CrudController extends ChangeCrudController
             return ($a['total'] > $b['total']) ? -1 : 1;
         });
 
+        $navigation = [
+            ['text' => $factory->name]
+        ];
+        if ($unit) $navigation[] = ['text' => $unit->name];
+        if ($system) $navigation[] = ['text' => $system->name];
+
         return response()->json([
             'data' => $result,
-            'navigation' => [
-                ['text' => $factory->name],
-                ['text' => $unit->name],
-                ['text' => $system->name],
-            ]
+            'navigation' => $navigation
         ]);
     }
 }

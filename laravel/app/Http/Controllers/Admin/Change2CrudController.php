@@ -163,26 +163,77 @@ class Change2CrudController extends ChangeCrudController
                 'id' => $status['id'],
                 'title' => $status['name'],
                 'total' => $total,
-                // 'color' => ($status['id'] === 1 || $status['id'] === 2)
-                //             ? 'blue'
-                //             : (
-                //                 $status['id'] === 20 || $status['id'] === 24
-                //                 ? 'success'
-                //                 : (
-                //                     $status['id'] === 8
-                //                     ? 'error'
-                //                     : 'blue-grey'
-                //                 )
-                //             )
+            ];
+        }
+
+        $groupMaps = [
+            'Initiated' => [
+                'Draft',
+                'Open'
+            ],
+            'Screeening' => [
+                'Screening progress',
+                'Screening approved',
+                'Screening not approved'
+            ],
+            'Design' => [
+                'Design progress'
+            ],
+            'Design Review/Approve' => [
+                'Waiting for technical reviewal',
+                'Technical reviewal progress',
+                'Technical reviewed ok',
+                'Technical reviewed not ok'
+            ],
+            'Implement' => [
+                'Implementation progress'
+            ],
+            'Implement Review/Approve' => [
+                'Waiting for manager approval',
+                'Manager approval progress',
+                'Manager approved',
+                'Manager not approved'
+            ],
+            'Closeout' => [
+                'Update documents progress',
+                'Close out',
+                'Close out progress',
+            ],
+            'Closeout Review/Approve' => [
+                'Close out not approved',
+                'Close out approved',
+            ],
+            'Closed/Cancelled' => [
+                'Cancel progress',
+                'Cancelled',
+                'Closed'
+            ]
+        ];
+
+        $finalResult = [];
+
+        foreach ($groupMaps as $group => $statuses) {
+            $filter = array_filter($result, function($item) use ($statuses) {
+                return in_array($item['title'], $statuses, true);
+            });
+
+            $total = array_sum(array_column($filter, 'total'));
+
+            $finalResult[] = [
+                'id' => $group,
+                'title' => $group,
+                'total' => $total,
                 'color' => $total ? 'blue' : 'blue-grey'
             ];
         }
 
-        usort($result, function ($a, $b) {
+        // sort
+        usort($finalResult, function ($a, $b) {
             if ($a['total'] == $b['total']) return 0;
             return ($a['total'] > $b['total']) ? -1 : 1;
         });
 
+        // navigation
         $navigation = [
             ['text' => $factory->name]
         ];
@@ -190,7 +241,7 @@ class Change2CrudController extends ChangeCrudController
         if ($system) $navigation[] = ['text' => $system->name];
 
         return response()->json([
-            'data' => $result,
+            'data' => $finalResult,
             'navigation' => $navigation
         ]);
     }

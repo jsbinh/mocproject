@@ -10,6 +10,33 @@
 
             <form v-if="activeTab === 0" onsubmit="return false">
                 <v-row class="mb-n6">
+                    <v-col>
+                        <v-label>Status <strong class="text-primary">{{status}}</strong></v-label>
+                        <v-stepper alt-labels style="box-shadow:none;" :value="statusValue">
+                            <v-stepper-header>
+                                <v-stepper-step step="0" :complete="statusValue >= 0">Draft</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="1" :complete="statusValue >= 1">Open</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="2" :complete="statusValue >= 2">Screening</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="3" :complete="statusValue >= 3">Design</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="4" :complete="statusValue >= 4">Review</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="5" :complete="statusValue >= 5">Implementation</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="6" :complete="statusValue >= 6">Approval</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="7" :complete="statusValue >= 7">Documents</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="8" :complete="statusValue >= 8">Closed/Cancelled</v-stepper-step>
+                            </v-stepper-header>
+                        </v-stepper>
+                    </v-col>
+                </v-row>
+
+                <v-row class="mb-n6">
                     <v-col cols="6">
                         <v-text-field
                             v-model="id"
@@ -63,33 +90,6 @@
                             @change="$v.system && $v.system.$touch()"
                             @blur="$v.system && $v.system.$touch()"
                         ></v-select>
-                    </v-col>
-                </v-row>
-
-                <v-row class="mb-n6">
-                    <v-col>
-                        <v-label>Status <strong class="text-primary">{{status}}</strong></v-label>
-                        <v-stepper alt-labels style="box-shadow:none;" :value="statusValue">
-                            <v-stepper-header>
-                                <v-stepper-step step="0" :complete="statusValue >= 0">Draft</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="1" :complete="statusValue >= 1">Open</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="2" :complete="statusValue >= 2">Screening</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="3" :complete="statusValue >= 3">Design</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="4" :complete="statusValue >= 4">Review</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="5" :complete="statusValue >= 5">Implementation</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="6" :complete="statusValue >= 6">Approval</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="7" :complete="statusValue >= 7">Documents</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="8" :complete="statusValue >= 8">Closed/Cancelled</v-stepper-step>
-                            </v-stepper-header>
-                        </v-stepper>
                     </v-col>
                 </v-row>
 

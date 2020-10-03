@@ -25,7 +25,9 @@
                 @update:active="selectNode"
             >
                 <template v-slot:prepend="{ item }">
-                    <v-icon v-text="`mdi-${item.level === 0 ? 'factory' : item.level === 1 ? 'view-stream' : item.level === 2 ? 'view-stream' : 'clipboard-list-outline'}`">
+                    <v-icon v-text="`mdi-${item.level === 0 ? 'factory' : item.level === 1 ? 'view-stream' : 'view-stream'}`" v-if="item.level < 3">
+                    </v-icon>
+                    <v-icon v-text="'mdi-checkbox-blank-circle'" v-if="item.level == 3" :color="colors[Math.floor(Math.random() * colors.length)]">
                     </v-icon>
                 </template>
                 <template slot="append" slot-scope="{ item }">
@@ -49,6 +51,7 @@
             // open: [1, 2],
             search: null,
             caseSensitive: false,
+            colors: ['green', 'red', 'grey', 'orange']
         }),
         mounted() {
             this.loadData();

@@ -39,7 +39,7 @@
                 <v-row class="mb-n6">
                     <v-col cols="6">
                         <v-text-field
-                            v-model="id"
+                            v-model="changeId"
                             label="Change ID"
                             outlined
                             disabled
@@ -53,7 +53,7 @@
                         <v-select
                             v-model="factory"
                             item-text="name"
-                            item-value="id"
+                            item-value="short_name"
                             :items="factoryItems"
                             :error-messages="factoryErrors"
                             label="Factory"
@@ -67,7 +67,7 @@
                         <v-select
                             v-model="unit"
                             item-text="name"
-                            item-value="id"
+                            item-value="short_name"
                             :items="unitItems"
                             :error-messages="unitErrors"
                             label="Unit"
@@ -81,7 +81,7 @@
                         <v-select
                             v-model="system"
                             item-text="name"
-                            item-value="id"
+                            item-value="short_name"
                             :items="systemItems"
                             :error-messages="systemErrors"
                             label="System"
@@ -632,7 +632,11 @@
                 if (!this.$v.system.$dirty) return errors;
                 !this.$v.system.required && errors.push('System is required.');
                 return errors;
-            }
+            },
+            changeId() {
+                const change_id = this.factory + '-' + this.unit + '-' + this.system;
+                return this.change_id = change_id;
+            },
         },
 
         methods: {
@@ -712,6 +716,7 @@
                 );
             },
             submit(e, status = null) {
+                console.log('id', this.id);
                 this.$v.$touch();
 
                 if (this.$v.$error) return alert("Error! Please check the form.");

@@ -3,4 +3,5 @@
 Homestead.yaml
 Homestead.json
 .env
-# composer.lock
+composer.lock
+package-lock.json

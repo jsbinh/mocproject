@@ -16,9 +16,9 @@ class UsersTableSeeder extends Seeder
     {
         //
         DB::table('users')->insert([
-            'name' => 'Kiet Tran', //Str::random(10),
-            'email' => 'tuankiet1708@gmail.com',
-            'password' => Hash::make('nopass@123'),
+            'name' => 'Admin', //Str::random(10),
+            'email' => 'admin.mocproject@gmail.com',
+            'password' => Hash::make('admin@123'),
             'created_at' => date('Y-m-d H:i:s', time()),
             'email_verified_at' => date('Y-m-d H:i:s', time())
         ]);

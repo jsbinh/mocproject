@@ -20,6 +20,8 @@ Route::get('/', function () {
     return redirect(config('backpack.base.route_prefix'));
 });
 
+Route::get('/get-change-id', [\App\Http\Controller\Admin\AdminController::class, 'getChangeID'])->name('getChangeId');
+
 Route::get('/test', function() {
     \Log::info('Hello', ['world']);
     throw new \Exception('my error', 400);

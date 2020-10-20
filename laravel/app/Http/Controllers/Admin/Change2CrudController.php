@@ -235,7 +235,7 @@ class Change2CrudController extends ChangeCrudController
 
         // navigation
         $navigation = [
-            ['text' => $factory->name]
+            ['text' => $factory->name ?? null]
         ];
         if ($unit) $navigation[] = ['text' => $unit->name];
         if ($system) $navigation[] = ['text' => $system->name];

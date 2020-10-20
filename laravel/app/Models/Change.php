@@ -41,10 +41,10 @@ class Change extends Model
         $systems = array_key_by($systems, 'id');
         $statuses = array_key_by($statuses, 'id');
 
+
         $changes = $this->get(['id', 'title', 'factory', 'unit', 'system', 'status_id'])->toArray();
 
         $tree = [];
-
         // push data to tree
         foreach ($changes as $change) {
             $factory = $change['factory'];
@@ -75,25 +75,27 @@ class Change extends Model
             ];
         }
 
+
+
         // default data for empty data of factory
         // factories
         foreach ($factories as $factory) {
             $factoryId = $tree[$factory['id']]['id'] = "f_" . str_pad($factory['id'], 10, '0', STR_PAD_LEFT);
-            $tree[$factory['id']]['name'] = $factory['name'];
+            $tree[$factory['id']]['name'] = $factory['name'] . "( {$factory['short_name']} )";
             $tree[$factory['id']]['level'] = 0;
             $tree[$factory['id']]['children'] = $tree[$factory['id']]['children'] ?? [];
 
             // units
             foreach ($units as $unit) {
                 $unitId = $tree[$factory['id']]['children'][$unit['id']]['id'] = $factoryId . "_u_" . str_pad($unit['id'], 10, '0', STR_PAD_LEFT);;
-                $tree[$factory['id']]['children'][$unit['id']]['name'] = $unit['name'];
+                $tree[$factory['id']]['children'][$unit['id']]['name'] = $unit['name']. "( {$unit['short_name']} )";
                 $tree[$factory['id']]['children'][$unit['id']]['level'] = 1;
                 $tree[$factory['id']]['children'][$unit['id']]['children'] = $tree[$factory['id']]['children'][$unit['id']]['children'] ?? [];
 
                 // systems
                 foreach ($systems as $system) {
                     $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['id'] = $unitId . "_s_" . str_pad($system['id'], 10, '0', STR_PAD_LEFT);;
-                    $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['name'] = $system['name'];
+                    $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['name'] = $system['name'] ."( {$system['short_name']} )";
                     $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['level'] = 2;
                     $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['children'] = $tree[$factory['id']]['children'][$unit['id']]['children'][$system['id']]['children'] ?? [];
                 }
@@ -148,6 +150,11 @@ class Change extends Model
     public function assignee()
     {
         return $this->belongsTo('Framework\User', 'assignee_id');
+    }
+
+    public function system()
+    {
+        return $this->belongsTo('Framework\Models\System', 'system');
     }
 
     /*

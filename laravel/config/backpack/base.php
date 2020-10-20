@@ -110,13 +110,13 @@ return [
     'footer_class' => 'app-footer d-none',
 
     // Developer or company name. Shown in footer.
-    'developer_name' => 'Leo Loves Coding',
+    //'developer_name' => 'Leo Loves Coding',
 
     // Developer website. Link in footer. Type false if you want to hide it.
-    'developer_link' => 'https://tranletuankiet.com',
+    //'developer_link' => 'https://tranletuankiet.com',
 
     // Show powered by Laravel Backpack in the footer? true/false
-    'show_powered_by' => true,
+    //'show_powered_by' => true,
 
     // -------
     // SCRIPTS

@@ -35,6 +35,11 @@ class System extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function change()
+    {
+        return $this->hasMany(Change::class, 'system', 'id');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES

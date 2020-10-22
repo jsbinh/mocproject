@@ -15,6 +15,8 @@ use Framework\Models\Unit;
 use Framework\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ChangeCrudController
@@ -49,6 +51,18 @@ class Change2CrudController extends ChangeCrudController
         ]);
     }
 
+    public function getMyTask()
+    {
+        $status_id = Auth::user()->status_id;
+        $data = Change::query()
+            ->where('status_id', $status_id)
+            ->get();
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
     public function getSelectItems(string $item)
     {
         $model = '\\Framework\\Models\\' . ucfirst($item);
@@ -60,46 +74,88 @@ class Change2CrudController extends ChangeCrudController
 
     public function saveChange(Request $request)
     {
-        $change = new Change;
-        $fields = [
-            // 'id',
-            'factory',
-            'unit',
-            'system',
-            'title',
-            'description',
-            'justification',
-        ];
+        try{
+            return DB::transaction(function() use($request){
+                $change = new Change;
+                $fields = [
+                    // 'id',
+                    'change_id',
+                    'factory',
+                    'unit',
+                    'system',
+                    'title',
+                    'description',
+                    'justification',
+                    'comment'
+                ];
 
-        // retrieve id
-        $id = $request->input('id');
-        if (! empty($id)) {
-            // find change
-            $change = $change->find($id);
+                // retrieve id
+                $id = $request->input('id');
+                if (! empty($id)) {
+                    // find change
+                    $change = $change->find($id);
+                }
+
+                // assign value
+                /*foreach ($fields as $field) {
+                    $change->{$field} = $request->input($field);
+                }*/
+
+                $factory = $request->input('factory');
+                $unit = $request->input('unit');
+                $system = $request->input('system');
+
+                $fac_short_name = Factory::query()->where('id', $factory)->first()->short_name;
+                $unit_short_name = Unit::query()->where('short_name', $unit)->first()->short_name;
+                $system_short_name = System::query()->where('short_name', $system)->first()->short_name;
+
+                $current_month = date('m');
+                $current_year = date('y');
+
+                $latestChangeId = Change::query()
+                    ->where('change_id', 'LIKE', $fac_short_name.'-'.$unit_short_name.'-'.$system_short_name.'-'.$current_year.$current_month.'%')
+                    ->orderBy('id', 'DESC')
+                    ->first(['change_id']);
+
+                if(empty($latestChangeId)){
+                    $changeId = $fac_short_name.'-'.$unit_short_name.'-'.$system_short_name.'-'.$current_year.$current_month.'-001';
+                }else{
+                    $arr_tmp = explode('-', $latestChangeId->change_id);
+                    $arr_tmp[4] = str_pad($arr_tmp[4] + 1, 3, 0, STR_PAD_LEFT);
+                    $changeId = implode($arr_tmp, '-');
+                }
+
+                $change->change_id = $changeId;
+                $change->factory = $factory;
+                $change->unit = $unit;
+                $change->system = $system;
+                $change->title = $request->input('title');
+                $change->description = $request->input('description');
+                $change->justification = $request->input('justification');
+//        $change->comment = $request->input('comment');
+
+
+                if (empty($id)) {
+                    $change->status_id = 1; // Draft
+                    $change->created_by_id = backpack_user()->id;
+                }
+
+                if ($nextStatus = $request->input('assigned_status')) {
+                    if (! is_numeric($nextStatus)) { // this is status name
+                        $nextStatus = (new ChangeStatus)->where('name', $nextStatus)->first()->id;
+                    }
+
+                    $change->status_id = $nextStatus;
+                }
+
+                // save to db
+                $result = $change->save();
+
+                return response()->json(compact('result') + ['id' => $change->id]);
+            });
+        }catch (\Exception $e){
+            return $e->getMessage();
         }
-
-        // assign value
-        foreach ($fields as $field) {
-            $change->{$field} = $request->input($field);
-        }
-
-        if (empty($id)) {
-            $change->status_id = 1; // Draft
-            $change->created_by_id = backpack_user()->id;
-        }
-
-        if ($nextStatus = $request->input('assigned_status')) {
-            if (! is_numeric($nextStatus)) { // this is status name
-                $nextStatus = (new ChangeStatus)->where('name', $nextStatus)->first()->id;
-            }
-
-            $change->status_id = $nextStatus;
-        }
-
-        // save to db
-        $result = $change->save();
-
-        return response()->json(compact('result') + ['id' => $change->id]);
     }
 
     public function viewChange(string $id)

@@ -42,7 +42,7 @@ class Change extends Model
         $statuses = array_key_by($statuses, 'id');
 
 
-        $changes = $this->get(['id', 'title', 'factory', 'unit', 'system', 'status_id'])->toArray();
+        $changes = $this->get(['id', 'change_id', 'title', 'factory', 'unit', 'system', 'status_id'])->toArray();
 
         $tree = [];
         // push data to tree
@@ -64,13 +64,19 @@ class Change extends Model
             $tree[$factory]['children'][$unit]['children'][$system]['level'] = 2;
             $tree[$factory]['children'][$unit]['children'][$system]['children'][] = $change + [
                 'level' => 3,
-                'name' => 'C' . str_pad($change['id'], 6, '0', STR_PAD_LEFT)
+                    'name' => $change['change_id']
+                        . (
+                        ($statuses[$change['status_id']]['name'] ?? null)
+                            ? ' (' . $statuses[$change['status_id']]['name'] . ')'
+                            : ''
+                        ),
+                /*'name' => 'C' . str_pad($change['id'], 6, '0', STR_PAD_LEFT)
                             . ' - ' . $change['title']
                             . (
                                 ($statuses[$change['status_id']]['name'] ?? null)
                                 ? ' (' . $statuses[$change['status_id']]['name'] . ')'
                                 : ''
-                            ),
+                            ),*/
                 'children' => []
             ];
         }

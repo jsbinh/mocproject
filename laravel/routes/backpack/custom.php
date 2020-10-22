@@ -20,6 +20,7 @@ Route::group([
     Route::group(['prefix' => 'web'], function() {
         Route::group(['prefix' => 'change'], function() {
             Route::get('/select-items/{item}', 'Change2CrudController@getSelectItems');
+            Route::get('/my-task', 'Change2CrudController@getMyTask');
             Route::get('/tree', 'Change2CrudController@getTreeOfChanges');
             Route::get('/report', 'Change2CrudController@report');
             Route::post('/', 'Change2CrudController@saveChange');

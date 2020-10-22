@@ -3,7 +3,7 @@
         <v-card-text v-if="context == 'change'">
             <v-tabs light @change="onChangeTab">
                 <v-tab>General</v-tab>
-                <v-tab>Notes & Comments</v-tab>
+                <v-tab>History</v-tab>
                 <v-tab>Attachments</v-tab>
                 <!-- <v-tab>History</v-tab> -->
             </v-tabs>
@@ -36,13 +36,17 @@
                     </v-col>
                 </v-row>
 
+                <input type="hidden" name="id" :value="id">
+
                 <v-row class="mb-n6">
                     <v-col cols="6">
                         <v-text-field
-                            v-model="changeId"
+                            v-model="change_id"
                             label="Change ID"
-                            outlined
+                            @input="$v.change_id && $v.change_id.$touch()"
+                            @blur="$v.change_id && $v.change_id.$touch()"
                             disabled
+                            outlined>
                         >
                         </v-text-field>
                     </v-col>
@@ -53,7 +57,7 @@
                         <v-select
                             v-model="factory"
                             item-text="name"
-                            item-value="short_name"
+                            item-value="id"
                             :items="factoryItems"
                             :error-messages="factoryErrors"
                             label="Factory"
@@ -67,7 +71,7 @@
                         <v-select
                             v-model="unit"
                             item-text="name"
-                            item-value="short_name"
+                            item-value="id"
                             :items="unitItems"
                             :error-messages="unitErrors"
                             label="Unit"
@@ -81,7 +85,7 @@
                         <v-select
                             v-model="system"
                             item-text="name"
-                            item-value="short_name"
+                            item-value="id"
                             :items="systemItems"
                             :error-messages="systemErrors"
                             label="System"
@@ -188,6 +192,7 @@
                     </v-col>
                 </v-row>
             </form>
+
 
             <form v-if="activeTab === 1" onsubmit="return false">
                 <v-timeline dense clipped>
@@ -409,6 +414,7 @@
 
     const defaultData = {
         id: null,
+        change_id: null,
         status: '',
         factory: null,
         unit: null,
@@ -424,6 +430,18 @@
         files: [],
         comments: []
     };
+
+    var month = new Date();
+    var currentMonth = month.getMonth();
+    var currentYear =  (new Date()).getFullYear();
+    var twoLastDigits = currentYear%100;
+    var formatedTwoLastDigits = "";
+
+    if (twoLastDigits <10 ) {
+        formatedTwoLastDigits = "0" + twoLastDigits;
+    } else {
+        formatedTwoLastDigits = "" + twoLastDigits;
+    }
 
     export default {
         mixins: [validationMixin],
@@ -443,6 +461,9 @@
                 required
             },
             system: {
+                required
+            },
+            change_id: {
                 required
             }
         },
@@ -634,7 +655,8 @@
                 return errors;
             },
             changeId() {
-                const change_id = this.factory + '-' + this.unit + '-' + this.system;
+                const change_id = this.factory+'-'+this.unit+'-'+this.system+currentMonth+formatedTwoLastDigits+'-xxx';
+                console.log(change_id);
                 return this.change_id = change_id;
             },
         },

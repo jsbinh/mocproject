@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Class ChangeCrudController
@@ -53,9 +54,14 @@ class Change2CrudController extends ChangeCrudController
 
     public function getMyTask()
     {
-        $status_id = Auth::user()->status_id;
+        $user = Session::get('user');
         $data = Change::query()
-            ->where('status_id', $status_id)
+            ->select([
+                'changes.*',
+                'change_id as name'
+            ])
+//            ->leftJoin('')
+            ->where('status_id', $user->status_id)
             ->get();
 
         return response()->json([
@@ -70,6 +76,58 @@ class Change2CrudController extends ChangeCrudController
         return response()->json([
             'data' => $data
         ]);
+    }
+
+    public function getChangeId(Request $request)
+    {
+        $factory = Arr::get($request, 'factory');
+        $unit = Arr::get($request, 'unit');
+        $system = Arr::get($request, 'system');
+
+        if(empty($factory) || empty($unit) || empty($system) || $system == 'undefined'){
+            return response()->json([
+                'data' => null
+            ]);
+        }
+
+        return response()->json([
+            'data' => $this->generalChangeId($factory, $unit, $system)
+        ]);
+    }
+
+    private function generalChangeId($factory, $unit, $system)
+    {
+        $current_month = date('m');
+        $current_year = date('y');
+
+        $fac_short_name = Factory::query()->where('id', $factory)->first();
+        $unit_short_name = Unit::query()->where('id', $unit)->first();
+        $system_short_name = System::query()->where('id', $system)->first();
+
+        if(!empty($fac_short_name)){
+            $fac_short_name = $fac_short_name->short_name;
+        }
+        if(!empty($unit_short_name)){
+            $unit_short_name = $unit_short_name->short_name;
+        }
+        if(!empty($system_short_name)){
+            $system_short_name = $system_short_name->short_name;
+        }
+
+        $latestChangeId = Change::query()
+            ->where('change_id', 'LIKE', $fac_short_name.'-'.$unit_short_name.'-'.$system_short_name.'-'.$current_year.$current_month.'%')
+            ->orderBy('id', 'DESC')
+            ->first(['change_id']);
+
+        if(empty($latestChangeId)){
+            $changeId = $fac_short_name.'-'.$unit_short_name.'-'.$system_short_name.'-'.$current_year.$current_month.'-001';
+        }else{
+            $arr_tmp = explode('-', $latestChangeId->change_id);
+            $arr_tmp[4] = str_pad($arr_tmp[4] + 1, 3, 0, STR_PAD_LEFT);
+            $changeId = implode($arr_tmp, '-');
+        }
+
+        return $changeId;
     }
 
     public function saveChange(Request $request)
@@ -96,47 +154,25 @@ class Change2CrudController extends ChangeCrudController
                     $change = $change->find($id);
                 }
 
-                // assign value
-                /*foreach ($fields as $field) {
-                    $change->{$field} = $request->input($field);
-                }*/
-
                 $factory = $request->input('factory');
                 $unit = $request->input('unit');
                 $system = $request->input('system');
+                $color = $request->input('color');
 
-                $fac_short_name = Factory::query()->where('id', $factory)->first()->short_name;
-                $unit_short_name = Unit::query()->where('short_name', $unit)->first()->short_name;
-                $system_short_name = System::query()->where('short_name', $system)->first()->short_name;
-
-                $current_month = date('m');
-                $current_year = date('y');
-
-                $latestChangeId = Change::query()
-                    ->where('change_id', 'LIKE', $fac_short_name.'-'.$unit_short_name.'-'.$system_short_name.'-'.$current_year.$current_month.'%')
-                    ->orderBy('id', 'DESC')
-                    ->first(['change_id']);
-
-                if(empty($latestChangeId)){
-                    $changeId = $fac_short_name.'-'.$unit_short_name.'-'.$system_short_name.'-'.$current_year.$current_month.'-001';
-                }else{
-                    $arr_tmp = explode('-', $latestChangeId->change_id);
-                    $arr_tmp[4] = str_pad($arr_tmp[4] + 1, 3, 0, STR_PAD_LEFT);
-                    $changeId = implode($arr_tmp, '-');
+                if(empty($id)){
+                    $change->change_id = $this->generalChangeId($factory, $unit, $system);
                 }
 
-                $change->change_id = $changeId;
                 $change->factory = $factory;
                 $change->unit = $unit;
                 $change->system = $system;
                 $change->title = $request->input('title');
-                $change->description = $request->input('description');
                 $change->justification = $request->input('justification');
-//        $change->comment = $request->input('comment');
-
+                $change->color = $color ?? Change::COLOR_DEFAULT;
 
                 if (empty($id)) {
                     $change->status_id = 1; // Draft
+                    $change->color = '#5B5A5A';
                     $change->created_by_id = backpack_user()->id;
                 }
 
@@ -151,51 +187,63 @@ class Change2CrudController extends ChangeCrudController
                 // save to db
                 $result = $change->save();
 
+
                 return response()->json(compact('result') + ['id' => $change->id]);
             });
         }catch (\Exception $e){
-            return $e->getMessage();
+            return $e->getMessage().'-'.$e->getFile().'-'.$e->getLine();
         }
     }
 
-    public function viewChange(string $id)
+    public function viewChange($id)
     {
-        $model = new Change;
-        $data = $model->where('id', intval($id))->first()->toArray();
+        try{
+            if(empty($id)){
+                return null;
+            }
+            $model = new Change;
+            $data = $model->where('id', intval($id))->first();
 
-        $attachment = new Attachment;
-        $files = $attachment->where('change_id', $id)->get()->toArray();
+            if(!empty($data)){
+                $data = $data->toArray();
+            }
 
-        $users = array_key_by((new User)->get()->toArray(), 'id');
-        $files = array_map(function($file) use ($users) {
-            return $file + ['user' => $users[$file['user_id']]];
-        }, $files);
+            $attachment = new Attachment;
+            $files = $attachment->where('change_id', $id)->get()->toArray();
 
-        $comments = (new Comment)->where('change_id', $id)->get()->toArray();
-        $comments = array_map(function($comment) use ($users) {
-            return $comment + ['user' => $users[$comment['user_id']]];
-        }, $comments);
+            $users = array_key_by((new User)->get()->toArray(), 'id');
+            $files = array_map(function($file) use ($users) {
+                return $file + ['user' => $users[$file['user_id']]];
+            }, $files);
 
-        $created_by = $users[$data['created_by_id']]['email'] ?? null;
-        $assigned_to = $users[$data['assignee_id']]['email'] ?? null;
-        $status = (new ChangeStatus)->find($data['status_id'] ?? 1)->name;
+            $comments = (new Comment)->where('change_id', $id)->get()->toArray();
+            $comments = array_map(function($comment) use ($users) {
+                return $comment + ['user' => $users[$comment['user_id']]];
+            }, $comments);
 
-        return response()->json([
-            'data' => $data + compact('files', 'comments', 'created_by', 'assigned_to', 'status')
-        ]);
+            $created_by = $users[$data['created_by_id']]['email'] ?? null;
+            $assigned_to = $users[$data['assignee_id']]['email'] ?? null;
+            $status = (new ChangeStatus)->find($data['status_id'] ?? 1)->name;
+
+            return response()->json([
+                'data' => $data + compact('files', 'comments', 'created_by', 'assigned_to', 'status')
+            ]);
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
     }
 
     public function report(Request $request)
     {
         $statuses = (new ChangeStatus)->get()->toArray();
 
-        $factory = intval($request->input('factory'));
+        $fac_id = $factory = intval($request->input('factory'));
         $where = ['factory'];
 
-        $unit = intval($request->input('unit'));
+        $unit_id = $unit = intval($request->input('unit'));
         if ($unit) $where[] = 'unit';
 
-        $system = intval($request->input('system'));
+        $system_id = $system = intval($request->input('system'));
         if ($system) $where[] = 'system';
 
         $where = compact(...$where);
@@ -279,7 +327,11 @@ class Change2CrudController extends ChangeCrudController
                 'id' => $group,
                 'title' => $group,
                 'total' => $total,
-                'color' => $total ? 'blue' : 'blue-grey'
+                'color' => $total ? 'blue' : 'blue-grey',
+                'factory'   => $fac_id,
+                'unit'      => $unit_id,
+                'system'     => $system_id,
+                'status_id' => $filter
             ];
         }
 
@@ -300,5 +352,10 @@ class Change2CrudController extends ChangeCrudController
             'data' => $finalResult,
             'navigation' => $navigation
         ]);
+    }
+
+    public function viewDetailReport(Request $request)
+    {
+
     }
 }

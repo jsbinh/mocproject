@@ -3,6 +3,7 @@
 const state = {
     foo: 'bar',
     selectedNode: null,
+    selectedNodeTask: null,
     buttonNewChangeClicked: {
         clicked: false,
         meta: {

@@ -24,6 +24,8 @@ class Change extends Model
     // protected $hidden = [];
     // protected $dates = [];
 
+    const COLOR_DEFAULT = '#5B5A5A';
+
     public function getTreeOfChanges()
     {
         $modelFactory = new Factory;

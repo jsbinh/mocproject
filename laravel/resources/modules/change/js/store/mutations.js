@@ -5,6 +5,9 @@ const mutations = {
     selectNode (state, value) {
         state.selectedNode = value;
     },
+    selectNodeTask (state, value) {
+        state.selectedNodeTask = value;
+    },
     toggleButtonNewChange (state, value) {
         state.buttonNewChangeClicked = value;
     },

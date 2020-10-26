@@ -105,7 +105,8 @@ return [
     // change background color with bg-dark, bg-primary, bg-secondary, bg-danger, bg-warning, bg-success, bg-info, bg-blue, bg-light-blue, bg-indigo, bg-purple, bg-pink, bg-red, bg-orange, bg-yellow, bg-green, bg-teal, bg-cyan, bg-white
 
     'header_class' => 'app-header bg-dark navbar',
-    'body_class' => 'app aside-menu-fixed sidebar-lg-show',
+//    'body_class' => 'app aside-menu-fixed sidebar-lg-show',
+    'body_class' => 'app aside-menu-fixed',
     'sidebar_class' => 'sidebar bg-white sidebar-transparent',
     'footer_class' => 'app-footer d-none',
 

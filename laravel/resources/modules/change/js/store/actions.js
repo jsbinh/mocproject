@@ -6,6 +6,10 @@ export const selectNode = ({commit}, payload) => {
     commit('selectNode', payload);
 }
 
+export const selectNodeTask = ({commit}, payload) => {
+    commit('selectNodeTask', payload);
+}
+
 export const toggleButtonNewChange = ({commit}, payload) => {
     commit('toggleButtonNewChange', payload);
 }

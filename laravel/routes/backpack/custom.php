@@ -20,7 +20,7 @@ Route::group([
     Route::group(['prefix' => 'web'], function() {
         Route::group(['prefix' => 'change'], function() {
             Route::get('/select-items/{item}', 'Change2CrudController@getSelectItems');
-            Route::get('/my-task', 'Change2CrudController@getMyTask');
+
             Route::get('/tree', 'Change2CrudController@getTreeOfChanges');
             Route::get('/report', 'Change2CrudController@report');
             Route::post('/', 'Change2CrudController@saveChange');
@@ -35,6 +35,10 @@ Route::group([
         Route::group(['prefix' => 'comment'], function() {
             Route::post('/', 'Comment2CrudController@post');
         });
+        Route::get('/my-task', 'Change2CrudController@getMyTask');
+        Route::get('/generate-change-id', 'Change2CrudController@getChangeId');
+        Route::get('/view-detail-report', 'Change2CrudController@viewDetailReport');
+
     });
 
     Route::crud('tag', 'TagCrudController');

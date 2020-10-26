@@ -14,9 +14,9 @@
                         <v-label>Status <strong class="text-primary">{{status}}</strong></v-label>
                         <v-stepper alt-labels style="box-shadow:none;" :value="statusValue">
                             <v-stepper-header>
-                                <v-stepper-step step="0" :complete="statusValue >= 0">Draft</v-stepper-step>
-                                <v-divider></v-divider>
-                                <v-stepper-step step="1" :complete="statusValue >= 1">Open</v-stepper-step>
+                                <!--<v-stepper-step step="0" :complete="statusValue >= 0">Draft</v-stepper-step>
+                                <v-divider></v-divider>-->
+                                <v-stepper-step step="1" :complete="statusValue >= 0">Initiate</v-stepper-step>
                                 <v-divider></v-divider>
                                 <v-stepper-step step="2" :complete="statusValue >= 2">Screening</v-stepper-step>
                                 <v-divider></v-divider>
@@ -39,20 +39,6 @@
                 <input type="hidden" name="id" :value="id">
 
                 <v-row class="mb-n6">
-                    <v-col cols="6">
-                        <v-text-field
-                            v-model="change_id"
-                            label="Change ID"
-                            @input="$v.change_id && $v.change_id.$touch()"
-                            @blur="$v.change_id && $v.change_id.$touch()"
-                            disabled
-                            outlined>
-                        >
-                        </v-text-field>
-                    </v-col>
-                </v-row>
-
-                <v-row class="mb-n6">
                     <v-col cols="4">
                         <v-select
                             v-model="factory"
@@ -63,7 +49,7 @@
                             label="Factory"
                             required
                             outlined
-                            @change="$v.factory && $v.factory.$touch()"
+                            @change="generateChangeId()"
                             @blur="$v.factory && $v.factory.$touch()"
                         ></v-select>
                     </v-col>
@@ -77,8 +63,8 @@
                             label="Unit"
                             required
                             outlined
-                            @change="$v.unit && $v.unit.$touch()"
                             @blur="$v.unit && $v.unit.$touch()"
+                            @change="generateChangeId()"
                         ></v-select>
                     </v-col>
                     <v-col cols="4">
@@ -91,9 +77,24 @@
                             label="System"
                             required
                             outlined
-                            @change="$v.system && $v.system.$touch()"
+
+                            @change="generateChangeId()"
                             @blur="$v.system && $v.system.$touch()"
                         ></v-select>
+                    </v-col>
+                </v-row>
+
+                <v-row class="mb-n6">
+                    <v-col cols="6">
+                        <v-text-field
+                            v-model="change_id"
+                            label="Change ID"
+                            @input="$v.change_id && $v.change_id.$touch()"
+                            @blur="$v.change_id && $v.change_id.$touch()"
+                            disabled
+                            outlined>
+                            >
+                        </v-text-field>
                     </v-col>
                 </v-row>
 
@@ -105,6 +106,7 @@
                             :counter="255"
                             label="Title"
                             required
+
                             @input="$v.title && $v.title.$touch()"
                             @blur="$v.title && $v.title.$touch()"
                             outlined>
@@ -117,6 +119,7 @@
                         <v-textarea
                             v-model="description"
                             label="Description"
+
                             @input="$v.description && $v.description.$touch()"
                             @blur="$v.description && $v.description.$touch()"
                             outlined>
@@ -131,6 +134,7 @@
                             :error-messages="justificationErrors"
                             label="Justification"
                             required
+
                             @input="$v.justification && $v.justification.$touch()"
                             @blur="$v.justification && $v.justification.$touch()"
                             outlined>
@@ -176,11 +180,11 @@
 
                 <v-row>
                     <v-col cols="4">
-                        <v-btn class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
-                        <v-btn @click="clear">clear</v-btn>
+                        <v-btn class="mr-1" @click="submit" v-if="id == null">{{id ? "update" : "create"}}</v-btn>
+                        <v-btn @click="clear" v-if="id == null">clear</v-btn>
                     </v-col>
                     <v-col cols="8" class="text-sm-right" v-if="status != 'Closed' && status != 'Cancelled'">
-                        <v-btn class="primary" @click="e => submit(e, 2)" v-if="status == 'Draft'">submit</v-btn>
+                        <v-btn class="primary" @click="e => submit(e, 2, 1)" v-if="id != null">Approve</v-btn>
                         <!-- <v-btn class="mr-1 primary" @click="submit">Screening approved</v-btn>
                         <v-btn class="error" @click="clear">Screening not approved</v-btn> -->
 
@@ -339,7 +343,7 @@
                         rounded
                         color="blue-grey"
                         class="ma-2 white--text"
-                        :href="reportLink" target="_blank"
+                        :href="reportLink"
                     >
                         View List
                         <!-- <v-icon right dark>mdi-cloud-download</v-icon> -->
@@ -365,6 +369,18 @@
                                 <v-card-subtitle>
                                     <h2>{{item.total}}</h2>
                                 </v-card-subtitle>
+                            </div>
+                            <div>
+                                <v-btn
+                                    rounded
+                                    color="blue-grey"
+                                    class="ma-2 white--text"
+                                    :href="viewDetailReport(item)"
+                                >
+                                    View Details
+                                    <!-- <v-icon right dark>mdi-cloud-download</v-icon> -->
+                                    <!--<v-icon right dark>mdi-format-list-text</v-icon>-->
+                                </v-btn>
                             </div>
 
                             <!-- <v-avatar
@@ -494,12 +510,14 @@
 
             reportChart: [],
             reportChartNavigation: [],
-            reportLink: ''
+            reportLink: '',
+
         }),
 
         mounted() {
             // load select options
             ['factory', 'unit', 'system'].forEach(item => {
+                console.log(item);
                 axios
                 .get(`${baseRoute}/web/change/select-items/${item}`)
                 .then(
@@ -520,6 +538,31 @@
         },
 
         watch: {
+            selectedNodeTask: function (newValue, oldValue) {
+                if (newValue && newValue != oldValue) {
+                    console.log('@@@ node task changed @@@', newValue);
+
+                    this.loadData(newValue.id);
+                    this.context = 'change';
+                    /*else {
+                        this.reportChart = [];
+                        this.reportChartNavigation = [];
+                        const splits = _.split(newValue.id, '_');
+                        const meta = {
+                            factory: splits[1] >> 0,
+                            unit: splits[3] >> 0,
+                            system: splits[5] >> 0
+                        };
+                        let linkTags = [`factory=${meta.factory}`];
+                        if (meta.unit) linkTags.push(`unit=${meta.unit}`);
+                        if (meta.system) linkTags.push(`system=${meta.system}`);
+                        this.reportLink = `${baseRoute}/change?${linkTags.join('&')}`;
+                        // console.log('@@@ linkTags @@@', linkTags, this.reportLink);
+                        this.loadReport(meta);
+                        this.context = 'report';
+                    }*/
+                }
+            },
             selectedNode: function (newValue, oldValue) {
                 if (newValue && newValue != oldValue) {
                     console.log('@@@ node changed @@@', newValue);
@@ -568,6 +611,7 @@
             ...mapGetters([
                 'foo',
                 'selectedNode',
+                'selectedNodeTask',
                 'buttonNewChangeClicked'
             ]),
             timelineComments() {
@@ -579,8 +623,8 @@
             },
             statusValue() {
                 switch (this.status) {
-                    case "Draft":
-                        return 0;
+                    /*case "Draft":
+                        return 0;*/
 
                     case "Open":
                         return 1;
@@ -720,6 +764,36 @@
                     () => void(0)
                 );
             },
+            generateChangeId() {
+                axios
+                    .get(`${baseRoute}/web/generate-change-id?factory=${this.factory}&unit=${this.unit}&system=${this.system}`)
+                    .then(
+                        response => {
+                            this.change_id = response.data.data;
+                        }
+                    )
+                    .catch(
+                        error => void(0)
+                    )
+                    .then(
+                        () => void(0)
+                    );
+            },
+            viewDetailReport(item) {
+                axios
+                    .get(`${baseRoute}/web/view-detail-report?factory=${item.factory}&unit=${item.unit}&system=${item.system}&status_name=${item.id}`)
+                    .then(
+                        response => {
+                            this.detailReport = response.data.data;
+                        }
+                    )
+                    .catch(
+                        error => void(0)
+                    )
+                    .then(
+                        () => void(0)
+                    );
+            },
             loadReport(meta) {
                 axios
                 .get(`${baseRoute}/web/change/report?factory=${meta.factory}&unit=${meta.unit}&system=${meta.system}`)
@@ -737,7 +811,7 @@
                     () => void(0)
                 );
             },
-            submit(e, status = null) {
+            submit(e, status = null, is_approve) {
                 console.log('id', this.id);
                 this.$v.$touch();
 
@@ -748,7 +822,7 @@
                 console.info("@@@ submit @@@", data);
 
                 axios
-                .post(`${baseRoute}/web/change`, {...data, assigned_status: status})
+                .post(`${baseRoute}/web/change`, {...data, assigned_status: status, is_approve: is_approve})
                 .then(
                     response => {
                         //

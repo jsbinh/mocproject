@@ -13,10 +13,10 @@
             </v-icon>
         </v-btn>
         <v-row align="start" justify="space-between">
-            <v-col cols="12" md="5" sm="12" v-if="!filterHidden">
+            <v-col cols="12" md="4" sm="12" v-if="!filterHidden">
                 <ChangeFilter :onAdd="closeFilter" />
             </v-col>
-            <v-col cols="12" :md="filterHidden ? 12 : 7" sm="12">
+            <v-col cols="12" :md="filterHidden ? 12 : 8" sm="12">
                 <ChangeContent/>
             </v-col>
         </v-row>

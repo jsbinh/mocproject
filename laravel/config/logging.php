@@ -101,6 +101,12 @@ return [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
         ],
+        'camunda' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/camunda/camunda.log'),
+            'level' => 'debug',
+            'days' => 60,
+        ],
     ],
 
 ];

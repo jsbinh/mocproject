@@ -41,7 +41,7 @@ class ChangeObserver
                           'wf_task_id' => Arr::get($task, '0.id', null)
                       ]);
 
-        Log::info('change created', [$data, $camunda, $task]);
+        Log::channel('camunda')->info('change created', [$data, $camunda, $task]);
     }
 
     /**
@@ -53,7 +53,7 @@ class ChangeObserver
     public function deleting(Change $change)
     {
         //
-        Log::info('change deleting', [$change]);
+        Log::channel('camunda')->info('change deleting', [$change]);
     }
 
     public function updated(Change $change)

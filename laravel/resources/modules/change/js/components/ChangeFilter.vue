@@ -1,8 +1,8 @@
 <template>
     <div>
             <v-tabs light @change="onChangeTask">
-                <v-tab>My Task</v-tab>
-                <v-tab>All Task</v-tab>
+                <v-tab>My Changes</v-tab>
+                <v-tab>All Changes</v-tab>
             </v-tabs>
 
         <v-card v-if="activeTab === 0">
@@ -18,7 +18,7 @@
                     @update:active="selectNodeTask"
                 >
                     <template v-slot:prepend="{ task }">
-                        <v-icon v-text="'mdi-checkbox-blank-circle'" :color="colors[task.color]">
+                        <v-icon v-text="'mdi-checkbox-blank-circle'" :color="">
                         </v-icon>
 
                     </template>

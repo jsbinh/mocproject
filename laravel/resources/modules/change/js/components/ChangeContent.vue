@@ -4,7 +4,7 @@
             <v-tabs light @change="onChangeTab">
                 <v-tab>General</v-tab>
                 <v-tab>History</v-tab>
-                <v-tab>Attachments</v-tab>
+                <v-tab>Attachment List</v-tab>
                 <!-- <v-tab>History</v-tab> -->
             </v-tabs>
 
@@ -14,29 +14,27 @@
                         <v-label>Status <strong class="text-primary">{{status}}</strong></v-label>
                         <v-stepper alt-labels style="box-shadow:none;" :value="statusValue">
                             <v-stepper-header>
-                                <!--<v-stepper-step step="0" :complete="statusValue >= 0">Draft</v-stepper-step>
-                                <v-divider></v-divider>-->
                                 <v-stepper-step step="1" :complete="statusValue >= 0">Initiate</v-stepper-step>
                                 <v-divider></v-divider>
                                 <v-stepper-step step="2" :complete="statusValue >= 2">Screening</v-stepper-step>
                                 <v-divider></v-divider>
                                 <v-stepper-step step="3" :complete="statusValue >= 3">Design</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="4" :complete="statusValue >= 4">Review</v-stepper-step>
+                                <v-stepper-step step="4" :complete="statusValue >= 4">Design Review/Approve</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="5" :complete="statusValue >= 5">Implementation</v-stepper-step>
+                                <v-stepper-step step="5" :complete="statusValue >= 5">Implement</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="6" :complete="statusValue >= 6">Approval</v-stepper-step>
+                                <v-stepper-step step="6" :complete="statusValue >= 6">Implement Review/Approve</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="7" :complete="statusValue >= 7">Documents</v-stepper-step>
+                                <v-stepper-step step="7" :complete="statusValue >= 7">Closeout</v-stepper-step>
                                 <v-divider></v-divider>
-                                <v-stepper-step step="8" :complete="statusValue >= 8">Closed/Cancelled</v-stepper-step>
+                                <v-stepper-step step="8" :complete="statusValue >= 8">Closeout Review/Approve</v-stepper-step>
+                                <v-divider></v-divider>
+                                <v-stepper-step step="9" :complete="statusValue >= 9">Closed/Cancelled</v-stepper-step>
                             </v-stepper-header>
                         </v-stepper>
                     </v-col>
                 </v-row>
-
-                <input type="hidden" name="id" :value="id">
 
                 <v-row class="mb-n6">
                     <v-col cols="4">
@@ -48,6 +46,7 @@
                             :error-messages="factoryErrors"
                             label="Factory"
                             required
+
                             outlined
                             @change="generateChangeId()"
                             @blur="$v.factory && $v.factory.$touch()"
@@ -62,6 +61,7 @@
                             :error-messages="unitErrors"
                             label="Unit"
                             required
+
                             outlined
                             @blur="$v.unit && $v.unit.$touch()"
                             @change="generateChangeId()"
@@ -83,6 +83,8 @@
                         ></v-select>
                     </v-col>
                 </v-row>
+
+                <input type="hidden" id="id" name="id" :value="id">
 
                 <v-row class="mb-n6">
                     <v-col cols="6">
@@ -146,7 +148,7 @@
                     <v-col>
                         <v-text-field
                             v-model="created_by"
-                            label="Creator"
+                            label="Initiator"
                             @input="$v.created_by && $v.created_by.$touch()"
                             @blur="$v.created_by && $v.created_by.$touch()"
                             outlined
@@ -156,7 +158,7 @@
                     <v-col>
                         <v-text-field
                             v-model="created_at"
-                            label="Created At"
+                            label="Initiator At"
                             @input="$v.created_at && $v.created_at.$touch()"
                             @blur="$v.created_at && $v.created_at.$touch()"
                             outlined
@@ -178,13 +180,14 @@
                     </v-col>
                 </v-row>
 
+
                 <v-row>
                     <v-col cols="4">
-                        <v-btn class="mr-1" @click="submit" v-if="id == null">{{id ? "update" : "create"}}</v-btn>
-                        <v-btn @click="clear" v-if="id == null">clear</v-btn>
+                        <v-btn class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
+                        <v-btn @click="clear">clear</v-btn>
                     </v-col>
                     <v-col cols="8" class="text-sm-right" v-if="status != 'Closed' && status != 'Cancelled'">
-                        <v-btn class="primary" @click="e => submit(e, 2, 1)" v-if="id != null">Approve</v-btn>
+                        <v-btn class="primary" @click="e => submit(e, 2, 1)" v-if="id != null">Submit</v-btn>
                         <!-- <v-btn class="mr-1 primary" @click="submit">Screening approved</v-btn>
                         <v-btn class="error" @click="clear">Screening not approved</v-btn> -->
 
@@ -440,6 +443,7 @@
         justification: '',
         created_by: '',
         created_at: null,
+        color: null,
         assigned_to: '',
         flow: '',
         flowJson: {},
@@ -504,14 +508,14 @@
             factoryItems: [],
             unitItems: [],
             systemItems: [],
+            priorityLevel: ['High', 'Medium', 'Low'],
             fileItems: null,
             moment: window.moment,
             lodash: window._,
 
             reportChart: [],
             reportChartNavigation: [],
-            reportLink: '',
-
+            reportLink: ''
         }),
 
         mounted() {
@@ -541,7 +545,7 @@
             selectedNodeTask: function (newValue, oldValue) {
                 if (newValue && newValue != oldValue) {
                     console.log('@@@ node task changed @@@', newValue);
-
+                    this.id = newValue.id;
                     this.loadData(newValue.id);
                     this.context = 'change';
                     /*else {
@@ -626,43 +630,33 @@
                     /*case "Draft":
                         return 0;*/
 
-                    case "Open":
+                    case "Initial":
                         return 1;
 
-                    case "Screening progress":
-                    case "Screening approved":
-                    case "Screening not approved":
+                    case "Screening":
                         return 2;
 
-                    case "Design progress":
+                    case "Design":
                         return 3;
 
-                    case "Waiting for technical reviewal":
-                    case "Technical reviewal progress":
-                    case "Technical reviewed ok":
-                    case "Technical reviewed not ok":
+                    case "Design Review/Approve":
                         return 4;
 
-                    case "Implementation progress":
+                    case "Implement":
                         return 5;
 
-                    case "Waiting for manager approval":
-                    case "Manager approval progress":
-                    case "Manager approved":
-                    case "Manager not approved":
+                    case "Implement Review/Approve":
                         return 6;
 
-                    case "Update documents progress":
+                    case "Closeout":
                         return 7;
 
-                    case "Close out":
-                    case "Close out progress":
-                    case "Close out not approved":
-                    case "Close out approved":
-                    case "Cancel progress":
-                    case "Cancelled":
-                    case "Closed":
+
+                    case "Closeout Review/Approve":
                         return 8;
+
+                    case "Closed/Cancelled":
+                        return 9;
 
                     default:
                         return 0;
@@ -813,6 +807,7 @@
             },
             submit(e, status = null, is_approve) {
                 console.log('id', this.id);
+
                 this.$v.$touch();
 
                 if (this.$v.$error) return alert("Error! Please check the form.");
@@ -845,12 +840,12 @@
 
                 const config = {
                     headers: { 'content-type': 'multipart/form-data' }
-                }
+                };
                 let formData = new FormData();
                 formData.append('file', file);
                 formData.append('meta', JSON.stringify({
                     change_id: this.id
-                }))
+                }));
 
                 axios
                 .post(`${baseRoute}/web/attachment`,  formData, config)

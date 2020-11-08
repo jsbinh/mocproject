@@ -23,10 +23,10 @@ class ChangeObserver
         //
         $data = $change->toArray();
         $data['status_id'] = isset($data['status_id'])
-                                ? intval($data['status_id'])
+                                ? (int)$data['status_id']
                                 : null;
         $data['assignee_id'] = isset($data['assignee_id'])
-                                ? intval($data['assignee_id'])
+                                ? (int)$data['assignee_id']
                                 : null;
 
         $data = $this->mapData($data);
@@ -56,7 +56,7 @@ class ChangeObserver
         Log::channel('camunda')->info('change deleting', [$change]);
     }
 
-    public function updated(Change $change)
+    public function updated(Change $change): void
     {
         //
         if (! $change->isDirty('status_id')) return;

@@ -18,7 +18,7 @@
                     @update:active="selectNodeTask"
                 >
                     <template v-slot:prepend="{ task }">
-                        <v-icon v-text="'mdi-checkbox-blank-circle'" :color="">
+                        <v-icon v-text="'mdi-checkbox-blank-circle'">
                         </v-icon>
 
                     </template>
@@ -52,9 +52,12 @@
                     @update:active="selectNode"
                 >
                     <template v-slot:prepend="{ item }">
-                        <v-icon v-text="`mdi-${item.level === 0 ? 'factory' : item.level === 1 ? 'view-stream' : 'view-stream'}`" v-if="item.level < 3">
-                        </v-icon>
-                        <v-icon v-text="'mdi-checkbox-blank-circle'" v-if="item.level == 3" :color="colors[Math.floor(Math.random() * colors.length)]">
+                        <!--<v-icon v-text="`mdi-${item.level === 0 ? 'factory' : item.level === 1 ? 'view-stream' : 'view-stream'}`" v-if="item.level < 3">
+                        </v-icon>-->
+                        <v-img light src="../assets/factory.jpg" v-if="item.level === 0"></v-img>
+                        <v-img light src="../assets/images/unit.jpg" v-if="item.level === 1"></v-img>
+                        <v-img light src="../assets/images/system.jpg" v-if="item.level === 2"></v-img>
+                        <v-icon v-text="'mdi-checkbox-blank-circle'" v-if="item.level == 3">
                         </v-icon>
                     </template>
                     <template slot="append" slot-scope="{ item }">
@@ -81,7 +84,7 @@
             // open: [1, 2],
             search: null,
             caseSensitive: false,
-            colors: ['green', 'red', 'grey', 'orange'],
+            // colors: ['green', 'red', 'grey', 'orange'],
             activeTab: 0,
             tasks: undefined
         }),

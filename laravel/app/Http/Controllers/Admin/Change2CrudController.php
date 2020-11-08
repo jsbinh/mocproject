@@ -136,7 +136,7 @@ class Change2CrudController extends ChangeCrudController
     public function saveChange(Request $request)
     {
         try{
-            return DB::transaction(function() use($request){
+//            return DB::transaction(function() use($request){
                 $change = new Change;
                 $fields = [
                     // 'id',
@@ -153,8 +153,7 @@ class Change2CrudController extends ChangeCrudController
                 // retrieve id
                 $id = $request->input('id');
                 if (! empty($id)) {
-                    // find change
-                    $change = $change->find($id);
+                    $change = Change::query()->find($id);
                 }
 
                 $factory = $request->input('factory');
@@ -171,8 +170,11 @@ class Change2CrudController extends ChangeCrudController
                 $change->system = $system;
                 $change->title = $request->input('title');
                 $change->justification = $request->input('justification');
-                $change->color = $color ?? Change::COLOR_DEFAULT;
                 $change->description = $request->input('description');
+
+                if(!empty($color)){
+                    $change->color = $color ?? Change::COLOR_DEFAULT;
+                }
 
                 if (empty($id)) {
                     $change->status_id = 1; // Draft
@@ -180,26 +182,50 @@ class Change2CrudController extends ChangeCrudController
                     $change->created_by_id = backpack_user()->id;
                 }
 
-                if ($nextStatus = $request->input('assigned_status')) {
+                /*if ($nextStatus = $request->input('assigned_status')) {
                     if (! is_numeric($nextStatus)) { // this is status name
                         $nextStatus = (new ChangeStatus)->where('name', $nextStatus)->first()->id;
                     }
 
                     $change->status_id = $nextStatus;
+                }*/
+
+                if($change->status_id){
+                    $change->status_id = $change->status_id + 1;
+
+                    $email = User::query()
+                        ->where('status_id', $change->status_id)
+                        ->value('email');
+
+                    $created_email = User::query()->where('id', $change->created_by_id)->value('email');
+
+                    Mail::send(
+                        'assignee-mail',
+                        [
+                            'change_id' => $change->change_id,
+                            'id'        => $change->id
+                        ],
+                        function ($message) use($change, $email, $created_email) {
+
+                            $message->to($email)
+                                ->subject("[Change #{$change->change_id}] " . ('Change Notification'));
+                        }
+                    );
+
                 }
 
                 // save to db
                 $result = $change->save();
 
 
-                if(empty($id)){
+                /*if(empty($id)){
                     $this->createdWithCamunda($change);
                 }else{
                     $this->updatedWithCamunda($change);
-                }
+                }*/
 
                 return response()->json(compact('result') + ['id' => $change->id]);
-            });
+//            });
         }catch (\Exception $e){
             return $e->getMessage().'-'.$e->getFile().'-'.$e->getLine();
         }
@@ -212,7 +238,7 @@ class Change2CrudController extends ChangeCrudController
                 return null;
             }
             $model = new Change;
-            $data = $model->where('id', intval($id))->first();
+            $data = $model->where('id', (int)$id)->first();
 
             if(!empty($data)){
                 $data = $data->toArray();
@@ -232,7 +258,13 @@ class Change2CrudController extends ChangeCrudController
             }, $comments);
 
             $created_by = $users[$data['created_by_id']]['email'] ?? null;
-            $assigned_to = $users[$data['assignee_id']]['email'] ?? null;
+//            $assigned_to = $users[$data['assignee_id']]['email'] ?? null;
+
+            $assigned_to = User::query()
+                ->where('status_id', $data['status_id'])
+                ->value('email');
+
+
             $status = (new ChangeStatus)->find($data['status_id'] ?? 1)->name;
 
             return response()->json([
@@ -371,18 +403,12 @@ class Change2CrudController extends ChangeCrudController
 
     public function createdWithCamunda(Change $change)
     {
-        dd($change);
         $data = $change->toArray();
-        $data['status_id'] = isset($data['status_id'])
-            ? intval($data['status_id'])
-            : null;
-        $data['assignee_id'] = isset($data['assignee_id'])
-            ? intval($data['assignee_id'])
-            : null;
+        $data['status_id'] = isset($data['status_id']) ? intval($data['status_id']) : null;
+        $data['assignee_id'] = isset($data['assignee_id']) ? intval($data['assignee_id']) : null;
 
         $data = $this->mapData($data);
 
-        //
         $camunda = Camunda::startProcess($data);
         $task = Camunda::getTask($camunda['id']);
 
@@ -410,7 +436,7 @@ class Change2CrudController extends ChangeCrudController
 
     public function updatedWithCamunda(Change $change)
     {
-        if (! $change->isDirty('status_id')) return;
+//        if (! $change->isDirty('status_id')) return;
 
         $data = $change->toArray();
         $data = $this->mapData($data);
@@ -418,15 +444,18 @@ class Change2CrudController extends ChangeCrudController
         Camunda::completeTask($data);
         $task = Camunda::getTask($data['wf_instance_id']);
 
+
         Log::info('change updated -- task', [$task, $data]);
 
         // task ended
         if (empty($task)) return;
 
+
         $variables = Camunda::getTaskVariables($taskId = $task[0]['id']);
         $decisionValue = Arr::get($variables, 'decision.value');
 
         Log::info('change updated -- vars', [$variables, $decisionValue]);
+
 
         // variables don't need to be updated
         if (empty($decisionValue)) return;
@@ -434,16 +463,16 @@ class Change2CrudController extends ChangeCrudController
         $update = [];
         $update['flow'] = json_encode($decisionValue);
 
-        if ($decisionValue['next_assignee'] ?? null) {
+        if (!empty($decisionValue['next_assignee'])) {
             $update['assignee_id'] = (new User())->where('email', $decisionValue['next_assignee'])->first()->id;
         } else {
             $update['assignee_id'] = $data['created_by_id'];
         }
 
-        if ($decisionValue['next_status'] ?? null) {
+        if (!empty($decisionValue['next_status'])) {
             $update['status_id'] = (new ChangeStatus())->where('name', $decisionValue['next_status'])->first()->id;
 
-            Mail::send(
+            /*Mail::send(
                 'assignee-mail',
                 ['change_id' => $data['id']],
                 function ($message) use ($update, $data, $decisionValue) {
@@ -465,25 +494,12 @@ class Change2CrudController extends ChangeCrudController
                     ])))
                         ->subject("[Change #{$data['id']}] " . ($actionMaps[$mailAction] ?? 'Change Notifcation'));
                 }
-            );
+            );*/
         }
 
-        // if ($decisionValue['next_action'] ?? null == 'send_approval_mail') {
-        //     // Log::info('SEND APPROVAL MAIL');
-        //     Mail::send(
-        //         'approval-mail',
-        //         ['change_id' => $data['id']],
-        //         function ($message) use ($decisionValue, $data) {
-        //             $message->to($decisionValue['next_approver'])
-        //                     ->subject("[Change #{$data['id']}] Approval Mail");
-        //         }
-        //     );
-        // }
-
-        (new Change())->where('id', $data['id'])
-            ->update([
-                    'wf_task_id' => $taskId
-                ] + $update);
+        $update['wf_task_id'] = $taskId;
+        Change::query()->where('id', $data['id'])
+            ->update($update);
 
         Log::info('change updated', [$data, $update]);
 

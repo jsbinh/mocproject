@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             // UsersTableSeeder::class,
             // FiltersTableSeeder::class,
             // ConfigTableSeeder::class
+            ChangeStatusTableSeeder::class
         ]);
     }
 }

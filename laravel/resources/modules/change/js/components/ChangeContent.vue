@@ -121,7 +121,6 @@
                         <v-textarea
                             v-model="description"
                             label="Description"
-
                             @input="$v.description && $v.description.$touch()"
                             @blur="$v.description && $v.description.$touch()"
                             outlined>
@@ -180,13 +179,86 @@
                     </v-col>
                 </v-row>
 
+                <v-row class="mb-n8" v-if="status=='Screening'">
+                    <v-col cols="4">
+                        <v-select
+                            v-model="color"
+                            item-text="text"
+                            item-value="value"
+                            :items="priorityLevels"
+                            label="Priority Level"
+                            required
+                            outlined
+                            @change=""
+                        ></v-select>
+                    </v-col>
+
+                    <v-col cols="4">
+                        <v-select
+                            v-model="statusNext"
+                            item-text="text"
+                            item-value="value"
+                            :items="statusListScreen"
+                            label="Next Assignment"
+                            required
+                            outlined
+                            @change=""
+                        ></v-select>
+                    </v-col>
+                </v-row>
+
+                <v-row class="mb-n8" v-if="status=='Design Review/Approve'">
+                    <v-col cols="4">
+                        <v-select
+                            v-model="statusNext"
+                            item-text="text"
+                            item-value="value"
+                            :items="statusListDesignApprove"
+                            label="Next Assignment"
+                            required
+                            outlined
+                            @change=""
+                        ></v-select>
+                    </v-col>
+                </v-row>
+
+                <v-row class="mb-n8" v-if="status=='Implement Review/Approve'">
+                    <v-col cols="4">
+                        <v-select
+                            v-model="statusNext"
+                            item-text="text"
+                            item-value="value"
+                            :items="statusListImplementApprove"
+                            label="Next Assignment"
+                            required
+                            outlined
+                            @change=""
+                        ></v-select>
+                    </v-col>
+                </v-row>
+
+                <v-row class="mb-n8" v-if="status=='Closeout Review/Approve'">
+                    <v-col cols="4">
+                        <v-select
+                            v-model="statusNext"
+                            item-text="text"
+                            item-value="value"
+                            :items="statusListCloseoutApprove"
+                            label="Next Assignment"
+                            required
+                            outlined
+                            @change=""
+                        ></v-select>
+                    </v-col>
+                </v-row>
+
 
                 <v-row>
                     <v-col cols="4">
-                        <v-btn class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
-                        <v-btn @click="clear">clear</v-btn>
+                        <v-btn v-if="status==null" class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
+                        <v-btn v-if="status==null" @click="clear">clear</v-btn>
                     </v-col>
-                    <v-col cols="8" class="text-sm-right" v-if="status != 'Closed' && status != 'Cancelled'">
+                    <v-col cols="8" class="text-sm-right" v-if="status != 'Closed' || status != 'Cancelled' || status != null">
                         <v-btn class="primary" @click="e => submit(e, 2, 1)" v-if="id != null">Submit</v-btn>
                         <!-- <v-btn class="mr-1 primary" @click="submit">Screening approved</v-btn>
                         <v-btn class="error" @click="clear">Screening not approved</v-btn> -->
@@ -443,12 +515,13 @@
         justification: '',
         created_by: '',
         created_at: null,
-        color: null,
+        color: '',
         assigned_to: '',
         flow: '',
         flowJson: {},
         files: [],
-        comments: []
+        comments: [],
+        statusNext: ''
     };
 
     var month = new Date();
@@ -508,14 +581,36 @@
             factoryItems: [],
             unitItems: [],
             systemItems: [],
-            priorityLevel: ['High', 'Medium', 'Low'],
             fileItems: null,
             moment: window.moment,
             lodash: window._,
 
             reportChart: [],
             reportChartNavigation: [],
-            reportLink: ''
+            reportLink: '',
+            priorityLevels: [
+                { text: 'High', value: 'red' },
+                { text: 'Medium', value: 'orange' },
+                { text: 'Low', value: 'green' }
+            ],
+
+            statusListScreen: [
+                { text: 'Screening Approve', value: '3' },
+                { text: 'Revisit Change', value: '1' },
+                { text: 'Reject Change', value: '9' }
+            ],
+            statusListDesignApprove: [
+                { text: 'Design Approve, go to Implement', value: 5 },
+                { text: 'Revisit, return to Design', value: 3 },
+            ],
+            statusListImplementApprove: [
+                { text: 'Implement Approve, go to Closeout', value: 7 },
+                { text: 'Implement not Approve, return to Implement', value: 5 },
+            ],
+            statusListCloseoutApprove: [
+                { text: 'Closeout Approve, Change Closed', value: 9 },
+                { text: 'Closeout not Approve, return to Closeout', value: 7 },
+            ]
         }),
 
         mounted() {
@@ -650,7 +745,6 @@
 
                     case "Closeout":
                         return 7;
-
 
                     case "Closeout Review/Approve":
                         return 8;

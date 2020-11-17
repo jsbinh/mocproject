@@ -18,7 +18,7 @@
                     @update:active="selectNodeTask"
                 >
                     <template v-slot:prepend="{ task }">
-                        <v-icon v-text="'mdi-checkbox-blank-circle'">
+                        <v-icon v-text="'mdi-checkbox-blank-circle'" color="task.color">
                         </v-icon>
 
                     </template>
@@ -85,6 +85,7 @@
             search: null,
             caseSensitive: false,
             // colors: ['green', 'red', 'grey', 'orange'],
+            color: '',
             activeTab: 0,
             tasks: undefined
         }),

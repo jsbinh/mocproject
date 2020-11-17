@@ -61,7 +61,8 @@ class Change2CrudController extends ChangeCrudController
         $data = Change::query()
             ->select([
                 'changes.*',
-                'change_id as name'
+                'change_id as name',
+                'color'
             ])
 //            ->leftJoin('')
             ->where('status_id', $user->status_id)
@@ -174,13 +175,10 @@ class Change2CrudController extends ChangeCrudController
 
                 if(!empty($color)){
                     $change->color = $color ?? Change::COLOR_DEFAULT;
+                }else{
+                    $change->color = $color;
                 }
 
-                if (empty($id)) {
-                    $change->status_id = 1; // Draft
-                    $change->color = '#5B5A5A';
-                    $change->created_by_id = backpack_user()->id;
-                }
 
                 /*if ($nextStatus = $request->input('assigned_status')) {
                     if (! is_numeric($nextStatus)) { // this is status name
@@ -190,32 +188,55 @@ class Change2CrudController extends ChangeCrudController
                     $change->status_id = $nextStatus;
                 }*/
 
-                if($change->status_id){
+            $user = backpack_user();
+
+            if($change->status_id){
+                $email = User::query()
+                    ->where('status_id', $change->status_id)
+                    ->value('email');
+
+                $created_email = User::query()->where('id', $change->created_by_id)->value('email');
+
+                Mail::send(
+                    'assignee-mail',
+                    [
+                        'change_id' => $change->change_id,
+                        'id'        => $change->id
+                    ],
+                    function ($message) use($change, $email, $created_email) {
+
+                        $message->to($email)
+                            ->subject("[Change #{$change->change_id}] " . ('Change Notification'));
+                    }
+                );
+            }
+
+            if (empty($id)) {
+                $change->status_id = 1; // Draft
+                $change->color = Change::COLOR_DEFAULT;
+                $change->created_by_id = backpack_user()->id;
+            }else{
+                if($change->status_id == 2){
+                    $change->color = $color;
+                }
+            }
+
+
+            if(empty($id) || $user->status_id == $change->status_id){
+                $nextStatus = Arr::get($request, 'statusNext');
+                if($nextStatus){
+                    $change->status_id = $nextStatus;
+                }else{
                     $change->status_id = $change->status_id + 1;
-
-                    $email = User::query()
-                        ->where('status_id', $change->status_id)
-                        ->value('email');
-
-                    $created_email = User::query()->where('id', $change->created_by_id)->value('email');
-
-                    Mail::send(
-                        'assignee-mail',
-                        [
-                            'change_id' => $change->change_id,
-                            'id'        => $change->id
-                        ],
-                        function ($message) use($change, $email, $created_email) {
-
-                            $message->to($email)
-                                ->subject("[Change #{$change->change_id}] " . ('Change Notification'));
-                        }
-                    );
-
                 }
 
                 // save to db
                 $result = $change->save();
+            }else{
+                $result = false;
+            }
+
+
 
 
                 /*if(empty($id)){
@@ -227,7 +248,8 @@ class Change2CrudController extends ChangeCrudController
                 return response()->json(compact('result') + ['id' => $change->id]);
 //            });
         }catch (\Exception $e){
-            return $e->getMessage().'-'.$e->getFile().'-'.$e->getLine();
+            return \Exception($e->getMessage());
+//            return $e->getMessage().'-'.$e->getFile().'-'.$e->getLine();
         }
     }
 
@@ -261,7 +283,7 @@ class Change2CrudController extends ChangeCrudController
 //            $assigned_to = $users[$data['assignee_id']]['email'] ?? null;
 
             $assigned_to = User::query()
-                ->where('status_id', $data['status_id'])
+                ->where('status_id', $data['status_id']+1)
                 ->value('email');
 
 

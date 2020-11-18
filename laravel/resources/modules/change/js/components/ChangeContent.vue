@@ -135,7 +135,6 @@
                             :error-messages="justificationErrors"
                             label="Justification"
                             required
-
                             @input="$v.justification && $v.justification.$touch()"
                             @blur="$v.justification && $v.justification.$touch()"
                             outlined>
@@ -167,7 +166,7 @@
                 </v-row>
 
                 <v-row class="mb-n6">
-                    <v-col cols="6">
+                    <v-col cols="6" v-if="status!='Screening' || status!='Design Review/Approve' || status!='Implement Review/Approve' || status!='Closeout Review/Approve'">
                         <v-text-field
                             v-model="assigned_to"
                             label="Assignment"
@@ -176,6 +175,17 @@
                             outlined
                             disabled>
                         </v-text-field>
+                    </v-col>
+                </v-row>
+
+                <v-row class="mb-n8" v-if="status!=null">
+                    <v-col cols="12">
+                        <v-textarea
+                            v-model="comment"
+                            label="Leave a comment..."
+                            solo
+                        >
+                        </v-textarea>
                     </v-col>
                 </v-row>
 
@@ -207,7 +217,7 @@
                     </v-col>
                 </v-row>
 
-                <v-row class="mb-n8" v-if="status=='Design Review/Approve'">
+                <v-row class="mb-md-n12" v-if="status=='Design Review/Approve'">
                     <v-col cols="4">
                         <v-select
                             v-model="statusNext"
@@ -521,7 +531,8 @@
         flowJson: {},
         files: [],
         comments: [],
-        statusNext: ''
+        statusNext: '',
+        comment: ''
     };
 
     var month = new Date();
@@ -571,7 +582,6 @@
         data: () => ({
             ...defaultData,
 
-            inputComment: null,
             nonce: 0,
             snackbar: false,
             hasError: false,

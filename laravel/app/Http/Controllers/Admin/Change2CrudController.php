@@ -236,6 +236,14 @@ class Change2CrudController extends ChangeCrudController
                 $result = false;
             }
 
+            $inputComment = Arr::get($request, 'inputComment');
+
+            $comment = new Comment();
+            $comment->change_id = $change->id;
+            $comment->user_id = $user->id;
+            $comment->content = $inputComment;
+            $comment->save();
+
 
 
 

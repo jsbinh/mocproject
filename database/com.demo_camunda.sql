@@ -19,14 +19,14 @@ USE `demo_camunda`;
 -- Dumping structure for table demo_camunda.attachments
 CREATE TABLE IF NOT EXISTS `attachments` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `change_id` int(11)  NULL,
-  `user_id` int(11) NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci  NULL,
-  `path` varchar(255) COLLATE utf8_unicode_ci  NULL,
+  `change_id` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `path` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `description` text COLLATE utf8_unicode_ci,
-  `meta` text NULL,
-  `created_at` timestamp,
-  `updated_at` timestamp,
+  `meta` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -56,23 +56,38 @@ CREATE TABLE IF NOT EXISTS `changes` (
   `change_id` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci,
-  `status_id` int(11)  NULL,
-  `assignee_id` int(11) NULL,
-  `approver_id` int(11)  NULL,
-  `created_at` timestamp NULL  NULL,
-  `updated_at` timestamp NULL  NULL,
-  `wf_instance_id` varchar(100) COLLATE utf8_unicode_ci  NULL,
-  `wf_task_id` varchar(100) COLLATE utf8_unicode_ci  NULL,
+  `status_id` int(11) DEFAULT NULL,
+  `assignee_id` int(11) DEFAULT NULL,
+  `approver_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `wf_instance_id` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `wf_task_id` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `justification` text COLLATE utf8_unicode_ci,
   `factory` int(11) NOT NULL,
   `unit` int(11) NOT NULL,
   `system` int(11) NOT NULL,
-  `flow` text  NULL,
-  `color` varchar(100) COLLATE utf8_unicode_ci  NULL,
-  `created_by_id` int(11)  NULL,
+  `flow` json DEFAULT NULL,
+  `color` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `created_by_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- Dumping data for table demo_camunda.changes: ~11 rows (approximately)
+/*!40000 ALTER TABLE `changes` DISABLE KEYS */;
+INSERT INTO `changes` (`id`, `change_id`, `title`, `description`, `status_id`, `assignee_id`, `approver_id`, `created_at`, `updated_at`, `wf_instance_id`, `wf_task_id`, `justification`, `factory`, `unit`, `system`, `flow`, `color`, `created_by_id`) VALUES
+	(52, 'FAC-UNI-SYS-2010-001', 'sdffsf', NULL, 2, NULL, NULL, '2020-10-26 08:24:14', '2020-11-02 21:26:09', 'f6c05630-1729-11eb-ac43-b2960452a160', 'f6c0cb7f-1729-11eb-ac43-b2960452a160', '345345', 2, 2, 2, NULL, '#5B5A5A', 1),
+	(53, 'FAC-UNI-SYS-2010-002', 'sdfsdfdsf', NULL, 6, NULL, NULL, '2020-10-26 08:32:38', '2020-11-07 10:44:02', '24037124-172b-11eb-ac43-b2960452a160', '2403bf65-172b-11eb-ac43-b2960452a160', 'sdfsdfsdfsdf', 1, 1, 2, NULL, '#5B5A5A', 1),
+	(54, 'FAC-UNI-SYS-2010-003', 'sdffs', 'dvsdfgdfg', 3, NULL, NULL, '2020-10-29 11:58:55', '2020-11-16 21:19:30', '72a4ab83-19a3-11eb-ac43-b2960452a160', '72a520d4-19a3-11eb-ac43-b2960452a160', 'sdfsd', 2, 2, 2, NULL, '#eb9334', 1),
+	(55, 'FAC-UNI-SYS-2010-004', '342234324', NULL, 4, NULL, NULL, '2020-10-29 13:13:25', '2020-11-07 10:41:13', 'db38040e-19ad-11eb-ac43-b2960452a160', 'db3963bf-19ad-11eb-ac43-b2960452a160', '234234234', 2, 2, 2, NULL, '#5B5A5A', 1),
+	(56, 'FAC-UNI-SYS-2010-005', '32423', '234423423', 3, NULL, NULL, '2020-10-29 13:25:27', '2020-11-07 11:15:49', '89288fd5-19af-11eb-ac43-b2960452a160', '8928de18-19af-11eb-ac43-b2960452a160', '234234234', 2, 2, 2, NULL, '#5B5A5A', 1),
+	(59, 'TES-UNI-SYS-2010-001', 'tyry456', 'gdfgdfgdfg', 6, NULL, NULL, '2020-10-29 13:56:24', '2020-11-18 21:27:33', 'dc51f18d-19b3-11eb-ac43-b2960452a160', 'dc5217c0-19b3-11eb-ac43-b2960452a160', 'dfgdfgdfgdfgdfgdf', 3, 3, 2, NULL, '#5B5A5A', 1),
+	(60, 'FAC-UNI-SYS-2011-001', 'Thong tin chinh tri', 'Tat ca thong tin', 3, NULL, NULL, '2020-11-16 20:41:03', '2020-11-16 21:34:35', NULL, NULL, 'Thong tin viui thoids', 2, 3, 1, NULL, '#eb9334', 40),
+	(61, 'FAC-UNI-SYS-2011-002', 'vcdfgsd', 'cdgvdf', 3, NULL, NULL, '2020-11-16 20:42:03', '2020-11-18 21:13:24', NULL, NULL, 'dfggd', 2, 1, 1, NULL, 'orange', 40),
+	(62, 'FAC-UNI-SYS-2011-003', 'gddfgdfgdf', 'fgsdgwergrw', 2, NULL, NULL, '2020-11-16 20:47:25', '2020-11-18 21:11:00', NULL, NULL, 'rgerget', 2, 1, 2, NULL, '#5B5A5A', 40),
+	(63, 'FAC-UNI-SYS-2011-004', 'ffwef', 'sdfsdfds', 1, NULL, NULL, '2020-11-16 21:06:47', '2020-11-16 21:06:47', NULL, NULL, 'sdvdsfsfs', 1, 1, 2, NULL, '#5B5A5A', 40),
+	(64, 'FAC-UNI-SYS-2011-005', 'rr34', 'dsfgsdfsf', 2, NULL, NULL, '2020-11-16 21:08:53', '2020-11-16 21:18:29', NULL, NULL, 'dfgdfgdfg', 2, 1, 2, NULL, '#5B5A5A', 40);
+/*!40000 ALTER TABLE `changes` ENABLE KEYS */;
 
 -- Dumping structure for table demo_camunda.change_statuses
 CREATE TABLE IF NOT EXISTS `change_statuses` (
@@ -107,9 +122,9 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table demo_camunda.comments: ~7 rows (approximately)
+-- Dumping data for table demo_camunda.comments: ~9 rows (approximately)
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
 INSERT INTO `comments` (`id`, `change_id`, `user_id`, `content`, `created_at`, `updated_at`) VALUES
 	(1, 28, 1, 'Test note', '2020-08-15 15:30:29', '2020-08-15 15:30:29'),
@@ -118,7 +133,9 @@ INSERT INTO `comments` (`id`, `change_id`, `user_id`, `content`, `created_at`, `
 	(4, 28, 1, 'hello \nhello \nhello hello \nhello \nhello \nhello \nhello \nhello', '2020-08-15 15:39:03', '2020-08-15 15:39:03'),
 	(5, 32, 1, 'Yêu cầu làm lại\nCần phải làm như sau:\n1. 123\n2. 456', '2020-08-16 00:10:42', '2020-08-16 00:10:42'),
 	(6, 39, 1, 'comment', '2020-08-16 09:13:01', '2020-08-16 09:13:01'),
-	(7, 35, 1, 'lam lai', '2020-08-16 10:22:17', '2020-08-16 10:22:17');
+	(7, 35, 1, 'lam lai', '2020-08-16 10:22:17', '2020-08-16 10:22:17'),
+	(8, 59, 43, NULL, '2020-11-18 21:25:07', '2020-11-18 21:25:07'),
+	(9, 59, 44, NULL, '2020-11-18 21:27:33', '2020-11-18 21:27:33');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 
 -- Dumping structure for table demo_camunda.config

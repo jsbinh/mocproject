@@ -2,7 +2,7 @@
     <v-card>
         <v-card-text v-if="context == 'change'">
             <v-tabs light @change="onChangeTab">
-                <v-tab>General</v-tab>
+                <v-tab>{{status}}</v-tab>
                 <v-tab>History</v-tab>
                 <v-tab>Attachment List</v-tab>
                 <!-- <v-tab>History</v-tab> -->
@@ -181,7 +181,7 @@
                 <v-row class="mb-n8" v-if="status!=null">
                     <v-col cols="12">
                         <v-textarea
-                            v-model="comment"
+                            v-model="commentText"
                             label="Leave a comment..."
                             solo
                         >
@@ -265,8 +265,8 @@
 
                 <v-row>
                     <v-col cols="4">
-                        <v-btn v-if="status==null" class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
-                        <v-btn v-if="status==null" @click="clear">clear</v-btn>
+                        <v-btn v-if="status==''" class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
+                        <v-btn v-if="status==''" @click="clear">clear</v-btn>
                     </v-col>
                     <v-col cols="8" class="text-sm-right" v-if="status != 'Closed' || status != 'Cancelled' || status != null">
                         <v-btn class="primary" @click="e => submit(e, 2, 1)" v-if="id != null">Submit</v-btn>
@@ -532,7 +532,8 @@
         files: [],
         comments: [],
         statusNext: '',
-        comment: ''
+        commentText: '',
+        inputComment: ''
     };
 
     var month = new Date();

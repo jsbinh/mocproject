@@ -128,7 +128,7 @@ class Change2CrudController extends ChangeCrudController
         }else{
             $arr_tmp = explode('-', $latestChangeId->change_id);
             $arr_tmp[4] = str_pad($arr_tmp[4] + 1, 3, 0, STR_PAD_LEFT);
-            $changeId = implode($arr_tmp, '-');
+            $changeId = implode('-', $arr_tmp);
         }
 
         return $changeId;
@@ -237,7 +237,6 @@ class Change2CrudController extends ChangeCrudController
             }
 
             $inputComment = Arr::get($request, 'commentText');
-
             $comment = new Comment();
             $comment->change_id = $change->id;
             $comment->user_id = $user->id;

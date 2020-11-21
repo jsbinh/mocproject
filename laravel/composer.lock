@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "700f91d40544d91d6921847f49bfe9ac",
+    "content-hash": "383e1e93851377ed57e10738dc73e8bf",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -5741,8 +5741,7 @@
             "dist": {
                 "type": "path",
                 "url": "./packages/ext-backpack-generators",
-                "reference": "e467fb1518c77f5add670907a28cd503ecaa96a6",
-                "shasum": null
+                "reference": "e467fb1518c77f5add670907a28cd503ecaa96a6"
             },
             "require": {
                 "backpack/crud": "4.1.*"
@@ -8201,7 +8200,9 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3"
+        "php": "^7.3",
+        "ext-json": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

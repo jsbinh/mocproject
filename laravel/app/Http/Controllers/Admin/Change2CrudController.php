@@ -222,12 +222,12 @@ class Change2CrudController extends ChangeCrudController
             }
 
 
-            if(empty($id) || $user->status_id == $change->status_id){
+            if($user->status_id == $change->status_id){
                 $nextStatus = Arr::get($request, 'statusNext');
                 if($nextStatus){
                     $change->status_id = $nextStatus;
                 }else{
-                    $change->status_id = $change->status_id + 1;
+                    //$change->status_id = $change->status_id + 1;
                 }
 
                 // save to db
@@ -242,7 +242,6 @@ class Change2CrudController extends ChangeCrudController
             $comment->user_id = $user->id;
             $comment->content = $inputComment;
             $comment->save();
-
 
 
 

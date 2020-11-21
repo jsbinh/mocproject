@@ -178,7 +178,7 @@
                     </v-col>
                 </v-row>
 
-                <v-row class="mb-n8" v-if="status!=null">
+                <v-row class="mb-n8" v-if="status!='' || status!=null">
                     <v-col cols="12">
                         <v-textarea
                             v-model="commentText"

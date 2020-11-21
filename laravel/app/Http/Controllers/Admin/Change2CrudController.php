@@ -236,7 +236,7 @@ class Change2CrudController extends ChangeCrudController
                 $result = false;
             }
 
-            $inputComment = Arr::get($request, 'inputComment');
+            $inputComment = Arr::get($request, 'commentText');
 
             $comment = new Comment();
             $comment->change_id = $change->id;
@@ -256,8 +256,8 @@ class Change2CrudController extends ChangeCrudController
                 return response()->json(compact('result') + ['id' => $change->id]);
 //            });
         }catch (\Exception $e){
-            return \Exception($e->getMessage());
 //            return $e->getMessage().'-'.$e->getFile().'-'.$e->getLine();
+            Log::error($e->getMessage());
         }
     }
 

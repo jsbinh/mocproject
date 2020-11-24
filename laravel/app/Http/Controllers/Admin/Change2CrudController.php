@@ -227,7 +227,7 @@ class Change2CrudController extends ChangeCrudController
                 if($nextStatus){
                     $change->status_id = $nextStatus;
                 }else{
-                    //$change->status_id = $change->status_id + 1;
+                    $change->status_id = $change->status_id + 1;
                 }
 
                 // save to db

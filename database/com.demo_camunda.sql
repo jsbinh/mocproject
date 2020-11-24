@@ -28,26 +28,10 @@ CREATE TABLE IF NOT EXISTS `attachments` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Dumping data for table demo_camunda.attachments: ~12 rows (approximately)
 /*!40000 ALTER TABLE `attachments` DISABLE KEYS */;
-INSERT INTO `attachments` (`id`, `change_id`, `user_id`, `name`, `path`, `description`, `meta`, `created_at`, `updated_at`) VALUES
-	(1, 28, 1, 'cmail-can-bang-vi.png', 'attachments/202008/uZiRGuJdpKHSTYMLOHOkebS3WG4m8XaJl1SVBEdn.png', NULL, '{"size": 640238, "time": 1597480721, "mime_type": "image/png", "original_name": "cmail-can-bang-vi.png"}', '2020-08-15 15:38:41', '2020-08-15 15:38:41'),
-	(3, 28, 1, 'robusta-honey.png', 'attachments/202008/YhHbfwM8T7QlJB3lSGqod0SXXStppjiDJ9lDR0cv.png', NULL, '{"size": 841916, "time": 1597480721, "mime_type": "image/png", "original_name": "robusta-honey.png"}', '2020-08-15 15:38:41', '2020-08-15 15:38:41'),
-	(5, 32, 1, 'Screen Shot 2020-07-27 at 08.11.10.png', 'attachments/202008/lT5rqLxYiuqtzNJwx6C7Oco2pMQiHHYEeFcur2kL.png', NULL, '{"size": 1976225, "time": 1597511391, "mime_type": "image/png", "original_name": "Screen Shot 2020-07-27 at 08.11.10.png"}', '2020-08-16 00:09:51', '2020-08-16 00:09:51'),
-	(6, 39, 1, 'san-pham-cmail-mat-ong.png', 'attachments/202008/zxH9abhBuv7ovkDDPRZDbcEaRv6KyvKrXycjQcpV.png', NULL, '{"size": 1374277, "time": 1597543992, "mime_type": "image/png", "original_name": "san-pham-cmail-mat-ong.png"}', '2020-08-16 09:13:12', '2020-08-16 09:13:12'),
-	(7, 39, 1, 'san-pham-cmail-dam-da.png', 'attachments/202008/ddl3uPHXWspN8pESbFbJz1NzIPu0JLQDBKZam04Y.png', NULL, '{"size": 1265777, "time": 1597543992, "mime_type": "image/png", "original_name": "san-pham-cmail-dam-da.png"}', '2020-08-16 09:13:12', '2020-08-16 09:13:12'),
-	(8, 39, 1, 'san-pham-cacao.png', 'attachments/202008/vCiZItxtUGcwLtXwjORnlSdBqwn5ii1mC7LYeNAG.png', NULL, '{"size": 1411836, "time": 1597543992, "mime_type": "image/png", "original_name": "san-pham-cacao.png"}', '2020-08-16 09:13:12', '2020-08-16 09:13:12'),
-	(9, 39, 1, 'cmail-can-bang-vi.png', 'attachments/202008/Wb8L0TJqxPqceJRHZJjXuU91JlcUBhh0ACpX6W8G.png', NULL, '{"size": 640238, "time": 1597544132, "mime_type": "image/png", "original_name": "cmail-can-bang-vi.png"}', '2020-08-16 09:15:32', '2020-08-16 09:15:32'),
-	(10, 32, 1, 'Screen Shot 2020-07-27 at 08.25.15.png', 'attachments/202008/JfdId6ZjKtsCiNYryWtI6pCyqMGCVBG9CEPtMe6i.png', NULL, '{"size": 354076, "time": 1597548890, "mime_type": "image/png", "original_name": "Screen Shot 2020-07-27 at 08.25.15.png"}', '2020-08-16 10:34:50', '2020-08-16 10:34:50'),
-	(11, 32, 1, 'san-pham-cmail-mat-ong.png', 'attachments/202008/oSanM5SG5FxLfdxpDStXtjVeAgzzjW5rozXWELmM.png', NULL, '{"size": 1374277, "time": 1597548890, "mime_type": "image/png", "original_name": "san-pham-cmail-mat-ong.png"}', '2020-08-16 10:34:50', '2020-08-16 10:34:50'),
-	(12, 32, 1, 'Screen Shot 2020-07-27 at 08.11.10.png', 'attachments/202008/nZmFrwHOTgDe4ctJ5MyEa8t404Kz9kQHyT1I4Ctl.png', NULL, '{"size": 1976225, "time": 1597548890, "mime_type": "image/png", "original_name": "Screen Shot 2020-07-27 at 08.11.10.png"}', '2020-08-16 10:34:50', '2020-08-16 10:34:50'),
-	(13, 32, 1, 'Screen Shot 2020-07-24 at 12.32.33.png', 'attachments/202008/oNzBVrFgtyCBABAJKrk5eVTq4FDADuhRcZ5FFPME.png', NULL, '{"size": 2503854, "time": 1597548890, "mime_type": "image/png", "original_name": "Screen Shot 2020-07-24 at 12.32.33.png"}', '2020-08-16 10:34:50', '2020-08-16 10:34:50'),
-	(14, 32, 1, 'Spotlight Ảnh hưởng kinh tế của SARS Cov2 và các chính sách kinh tế hỗ trợ.pdf', 'attachments/202008/pDLXFsGRzLmikjUdRK8TMUYyg3330OjVy1CYg16B.pdf', NULL, '{"size": 1248137, "time": 1597548933, "mime_type": "application/pdf", "original_name": "Spotlight Ảnh hưởng kinh tế của SARS Cov2 và các chính sách kinh tế hỗ trợ.pdf"}', '2020-08-16 10:35:33', '2020-08-16 10:35:33'),
-	(15, 41, 1, 'cpro_dev (2).sql', 'attachments/202010/1I4nxsoczWjSDuR3py3JOf3W1CdKCSL5mc5iEQRh.txt', NULL, '{"size": 2381426, "time": 1602343077, "mime_type": "text/plain", "original_name": "cpro_dev (2).sql"}', '2020-10-10 22:17:57', '2020-10-10 22:17:57'),
-	(16, 32, 1, 'cpro_dev_bk.sql', 'attachments/202010/zdqAfmImoJmmztzmhzchXVpW7y5hHljOU89oIYu7.txt', NULL, '{"size": 4480092, "time": 1602343465, "mime_type": "text/plain", "original_name": "cpro_dev_bk.sql"}', '2020-10-10 22:24:25', '2020-10-10 22:24:25'),
-	(17, 52, 17, 'PTI_ShortWorkflow.xlsx', 'attachments/202011/dTRQismhlfJdrRTJnXPSykSC8rRifQGbenPsTyoQ.xlsx', NULL, '{"size": 7373924, "time": 1604717450, "mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "original_name": "PTI_ShortWorkflow.xlsx"}', '2020-11-07 09:50:50', '2020-11-07 09:50:50');
 /*!40000 ALTER TABLE `attachments` ENABLE KEYS */;
 
 -- Dumping structure for table demo_camunda.changes
@@ -71,22 +55,10 @@ CREATE TABLE IF NOT EXISTS `changes` (
   `color` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_by_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table demo_camunda.changes: ~11 rows (approximately)
+-- Dumping data for table demo_camunda.changes: ~14 rows (approximately)
 /*!40000 ALTER TABLE `changes` DISABLE KEYS */;
-INSERT INTO `changes` (`id`, `change_id`, `title`, `description`, `status_id`, `assignee_id`, `approver_id`, `created_at`, `updated_at`, `wf_instance_id`, `wf_task_id`, `justification`, `factory`, `unit`, `system`, `flow`, `color`, `created_by_id`) VALUES
-	(52, 'FAC-UNI-SYS-2010-001', 'sdffsf', NULL, 2, NULL, NULL, '2020-10-26 08:24:14', '2020-11-02 21:26:09', 'f6c05630-1729-11eb-ac43-b2960452a160', 'f6c0cb7f-1729-11eb-ac43-b2960452a160', '345345', 2, 2, 2, NULL, '#5B5A5A', 1),
-	(53, 'FAC-UNI-SYS-2010-002', 'sdfsdfdsf', NULL, 6, NULL, NULL, '2020-10-26 08:32:38', '2020-11-07 10:44:02', '24037124-172b-11eb-ac43-b2960452a160', '2403bf65-172b-11eb-ac43-b2960452a160', 'sdfsdfsdfsdf', 1, 1, 2, NULL, '#5B5A5A', 1),
-	(54, 'FAC-UNI-SYS-2010-003', 'sdffs', 'dvsdfgdfg', 3, NULL, NULL, '2020-10-29 11:58:55', '2020-11-16 21:19:30', '72a4ab83-19a3-11eb-ac43-b2960452a160', '72a520d4-19a3-11eb-ac43-b2960452a160', 'sdfsd', 2, 2, 2, NULL, '#eb9334', 1),
-	(55, 'FAC-UNI-SYS-2010-004', '342234324', NULL, 4, NULL, NULL, '2020-10-29 13:13:25', '2020-11-07 10:41:13', 'db38040e-19ad-11eb-ac43-b2960452a160', 'db3963bf-19ad-11eb-ac43-b2960452a160', '234234234', 2, 2, 2, NULL, '#5B5A5A', 1),
-	(56, 'FAC-UNI-SYS-2010-005', '32423', '234423423', 3, NULL, NULL, '2020-10-29 13:25:27', '2020-11-07 11:15:49', '89288fd5-19af-11eb-ac43-b2960452a160', '8928de18-19af-11eb-ac43-b2960452a160', '234234234', 2, 2, 2, NULL, '#5B5A5A', 1),
-	(59, 'TES-UNI-SYS-2010-001', 'tyry456', 'gdfgdfgdfg', 6, NULL, NULL, '2020-10-29 13:56:24', '2020-11-18 21:27:33', 'dc51f18d-19b3-11eb-ac43-b2960452a160', 'dc5217c0-19b3-11eb-ac43-b2960452a160', 'dfgdfgdfgdfgdfgdf', 3, 3, 2, NULL, '#5B5A5A', 1),
-	(60, 'FAC-UNI-SYS-2011-001', 'Thong tin chinh tri', 'Tat ca thong tin', 3, NULL, NULL, '2020-11-16 20:41:03', '2020-11-16 21:34:35', NULL, NULL, 'Thong tin viui thoids', 2, 3, 1, NULL, '#eb9334', 40),
-	(61, 'FAC-UNI-SYS-2011-002', 'vcdfgsd', 'cdgvdf', 3, NULL, NULL, '2020-11-16 20:42:03', '2020-11-18 21:13:24', NULL, NULL, 'dfggd', 2, 1, 1, NULL, 'orange', 40),
-	(62, 'FAC-UNI-SYS-2011-003', 'gddfgdfgdf', 'fgsdgwergrw', 2, NULL, NULL, '2020-11-16 20:47:25', '2020-11-18 21:11:00', NULL, NULL, 'rgerget', 2, 1, 2, NULL, '#5B5A5A', 40),
-	(63, 'FAC-UNI-SYS-2011-004', 'ffwef', 'sdfsdfds', 1, NULL, NULL, '2020-11-16 21:06:47', '2020-11-16 21:06:47', NULL, NULL, 'sdvdsfsfs', 1, 1, 2, NULL, '#5B5A5A', 40),
-	(64, 'FAC-UNI-SYS-2011-005', 'rr34', 'dsfgsdfsf', 2, NULL, NULL, '2020-11-16 21:08:53', '2020-11-16 21:18:29', NULL, NULL, 'dfgdfgdfg', 2, 1, 2, NULL, '#5B5A5A', 40);
 /*!40000 ALTER TABLE `changes` ENABLE KEYS */;
 
 -- Dumping structure for table demo_camunda.change_statuses
@@ -122,20 +94,10 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- Dumping data for table demo_camunda.comments: ~9 rows (approximately)
+-- Dumping data for table demo_camunda.comments: ~15 rows (approximately)
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` (`id`, `change_id`, `user_id`, `content`, `created_at`, `updated_at`) VALUES
-	(1, 28, 1, 'Test note', '2020-08-15 15:30:29', '2020-08-15 15:30:29'),
-	(2, 28, 1, 'Test note \n123\n123', '2020-08-15 15:30:53', '2020-08-15 15:30:53'),
-	(3, 28, 1, 'Hello hello\nEm nên làm thế này...', '2020-08-15 15:38:20', '2020-08-15 15:38:20'),
-	(4, 28, 1, 'hello \nhello \nhello hello \nhello \nhello \nhello \nhello \nhello', '2020-08-15 15:39:03', '2020-08-15 15:39:03'),
-	(5, 32, 1, 'Yêu cầu làm lại\nCần phải làm như sau:\n1. 123\n2. 456', '2020-08-16 00:10:42', '2020-08-16 00:10:42'),
-	(6, 39, 1, 'comment', '2020-08-16 09:13:01', '2020-08-16 09:13:01'),
-	(7, 35, 1, 'lam lai', '2020-08-16 10:22:17', '2020-08-16 10:22:17'),
-	(8, 59, 43, NULL, '2020-11-18 21:25:07', '2020-11-18 21:25:07'),
-	(9, 59, 44, NULL, '2020-11-18 21:27:33', '2020-11-18 21:27:33');
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 
 -- Dumping structure for table demo_camunda.config
@@ -164,14 +126,10 @@ CREATE TABLE IF NOT EXISTS `factories` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `factories_name_unique` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Dumping data for table demo_camunda.factories: ~2 rows (approximately)
 /*!40000 ALTER TABLE `factories` DISABLE KEYS */;
-INSERT INTO `factories` (`id`, `name`, `short_name`, `created_at`, `updated_at`) VALUES
-	(1, 'Factory #1', 'FAC', '2020-08-01 10:19:07', '2020-08-01 10:19:07'),
-	(2, 'Factory #2', 'FAC', '2020-08-01 10:19:39', '2020-08-01 10:19:39'),
-	(3, 'Test', 'TES', '2020-10-13 22:04:34', '2020-10-13 22:04:34');
 /*!40000 ALTER TABLE `factories` ENABLE KEYS */;
 
 -- Dumping structure for table demo_camunda.failed_jobs
@@ -275,13 +233,10 @@ CREATE TABLE IF NOT EXISTS `systems` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `systems_name_unique` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Dumping data for table demo_camunda.systems: ~2 rows (approximately)
 /*!40000 ALTER TABLE `systems` DISABLE KEYS */;
-INSERT INTO `systems` (`id`, `name`, `short_name`, `factory_id`, `created_at`, `updated_at`) VALUES
-	(1, 'System #1', 'SYS', 0, '2020-08-04 13:27:15', '2020-08-04 13:27:15'),
-	(2, 'System #2', 'SYS', 0, '2020-08-04 13:27:19', '2020-08-04 13:27:19');
 /*!40000 ALTER TABLE `systems` ENABLE KEYS */;
 
 -- Dumping structure for table demo_camunda.tags
@@ -308,15 +263,10 @@ CREATE TABLE IF NOT EXISTS `units` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `units_name_unique` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- Dumping data for table demo_camunda.units: ~3 rows (approximately)
 /*!40000 ALTER TABLE `units` DISABLE KEYS */;
-INSERT INTO `units` (`id`, `name`, `short_name`, `unit_id`, `created_at`, `updated_at`) VALUES
-	(1, 'Unit #1', 'UNI', 0, '2020-08-04 13:27:05', '2020-08-04 13:27:05'),
-	(2, 'Unit Demo', 'UNI', 0, '2020-08-04 13:27:09', '2020-08-16 10:41:44'),
-	(3, 'Unit 2', 'UNI', 0, '2020-10-10 22:26:40', '2020-10-10 22:26:40'),
-	(4, 'ERWEFA332', 'ADR', 0, '2020-10-24 08:55:37', '2020-10-24 08:55:37');
 /*!40000 ALTER TABLE `units` ENABLE KEYS */;
 
 -- Dumping structure for table demo_camunda.users

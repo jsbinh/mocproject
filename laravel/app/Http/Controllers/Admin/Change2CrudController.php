@@ -256,6 +256,7 @@ class Change2CrudController extends ChangeCrudController
         }catch (\Exception $e){
 //            return $e->getMessage().'-'.$e->getFile().'-'.$e->getLine();
             Log::error($e->getMessage());
+            return $e->getMessage();
         }
     }
 

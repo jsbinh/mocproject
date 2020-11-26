@@ -24,7 +24,7 @@ class Change extends Model
     // protected $hidden = [];
     // protected $dates = [];
 
-    const COLOR_DEFAULT = '#5B5A5A';
+    const COLOR_DEFAULT = 'grey';
 
     public function getTreeOfChanges()
     {
@@ -44,7 +44,7 @@ class Change extends Model
         $statuses = array_key_by($statuses, 'id');
 
 
-        $changes = $this->get(['id', 'change_id', 'title', 'factory', 'unit', 'system', 'status_id'])->toArray();
+        $changes = $this->get(['id', 'change_id', 'title', 'factory', 'unit', 'system', 'status_id', 'color'])->toArray();
 
         $tree = [];
         // push data to tree
@@ -72,6 +72,7 @@ class Change extends Model
                             ? ' (' . $statuses[$change['status_id']]['name'] . ')'
                             : ''
                         ),
+                    'color' => $change['color'],
                 /*'name' => 'C' . str_pad($change['id'], 6, '0', STR_PAD_LEFT)
                             . ' - ' . $change['title']
                             . (
@@ -82,7 +83,6 @@ class Change extends Model
                 'children' => []
             ];
         }
-
 
 
         // default data for empty data of factory

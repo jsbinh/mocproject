@@ -139,19 +139,7 @@ class Change2CrudController extends ChangeCrudController
         try{
 //            return DB::transaction(function() use($request){
                 $change = new Change;
-                $fields = [
-                    // 'id',
-                    'change_id',
-                    'factory',
-                    'unit',
-                    'system',
-                    'title',
-                    'description',
-                    'justification',
-                    'comment'
-                ];
 
-                // retrieve id
                 $id = $request->input('id');
                 if (! empty($id)) {
                     $change = Change::query()->find($id);
@@ -192,7 +180,7 @@ class Change2CrudController extends ChangeCrudController
 
             if($change->status_id){
                 $email = User::query()
-                    ->where('status_id', $change->status_id)
+                    ->where('status_id', $change->status_id + 1)
                     ->value('email');
 
                 $created_email = User::query()->where('id', $change->created_by_id)->value('email');
@@ -221,7 +209,6 @@ class Change2CrudController extends ChangeCrudController
                 }
             }
 
-
             if($user->status_id == $change->status_id){
                 $nextStatus = Arr::get($request, 'statusNext');
                 if($nextStatus){
@@ -229,7 +216,9 @@ class Change2CrudController extends ChangeCrudController
                 }else{
                     $change->status_id = $change->status_id + 1;
                 }
+            }
 
+            if(empty($id) || $user->status_id == $change->status_id){
                 // save to db
                 $result = $change->save();
             }else{
@@ -256,7 +245,7 @@ class Change2CrudController extends ChangeCrudController
         }catch (\Exception $e){
 //            return $e->getMessage().'-'.$e->getFile().'-'.$e->getLine();
             Log::error($e->getMessage());
-            return $e->getMessage();
+//            return $e->getMessage();
         }
     }
 

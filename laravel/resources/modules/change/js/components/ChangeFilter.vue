@@ -17,8 +17,8 @@
                     activatable
                     @update:active="selectNodeTask"
                 >
-                    <template v-slot:prepend="{ task }">
-                        <v-icon v-text="'mdi-checkbox-blank-circle'" color="task.color">
+                    <template v-slot:prepend="{ item }">
+                        <v-icon v-text="'mdi-checkbox-blank-circle'" :color="item.color">
                         </v-icon>
 
                     </template>
@@ -52,18 +52,11 @@
                     @update:active="selectNode"
                 >
                     <template v-slot:prepend="{ item }">
-                        <!--<v-icon v-text="`mdi-${item.level === 0 ? 'factory' : item.level === 1 ? 'view-stream' : 'view-stream'}`" v-if="item.level < 3">
-                        </v-icon>-->
-                        <v-img light src="../assets/factory.jpg" v-if="item.level === 0"></v-img>
-                        <v-img light src="../assets/images/unit.jpg" v-if="item.level === 1"></v-img>
-                        <v-img light src="../assets/images/system.jpg" v-if="item.level === 2"></v-img>
-                        <v-icon v-text="'mdi-checkbox-blank-circle'" v-if="item.level == 3">
+                        <v-icon v-text="'mdi-checkbox-blank-circle'" :color="item.color" v-if="item.level === 3">
                         </v-icon>
-                    </template>
-                    <template slot="append" slot-scope="{ item }">
-                        <v-btn rounded small v-if="item.level === 2" @click="e => newChange(e, item)" title="Create a new change">
-                            <v-icon left>mdi-plus-circle</v-icon> New Change
-                        </v-btn>
+                        <v-img light width="30" src="baseRoute/factory.jpg" v-if="item.level === 0"></v-img>
+                        <v-img light src="/app/unit.jpg" v-if="item.level === 1"></v-img>
+                        <v-img light src="/app/system.jpg" v-if="item.level === 2"></v-img>
                     </template>
                 </v-treeview>
             </v-card-text>

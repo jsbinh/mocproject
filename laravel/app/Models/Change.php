@@ -5,6 +5,9 @@ namespace Framework\Models;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Framework\Models\ChangeStatus;
+use Framework\User;
+use Framework\Models\System;
 
 class Change extends Model
 {
@@ -95,7 +98,7 @@ class Change extends Model
 
             // units
             foreach ($units as $unit) {
-                $unitId = $tree[$factory['id']]['children'][$unit['id']]['id'] = $factoryId . "_u_" . str_pad($unit['id'], 10, '0', STR_PAD_LEFT);;
+                $unitId = $tree[$factory['id']]['children'][$unit['id']]['id'] = $factoryId . "_u_" . str_pad($unit['id'], 10, '0', STR_PAD_LEFT);
                 $tree[$factory['id']]['children'][$unit['id']]['name'] = $unit['name']. "( {$unit['short_name']} )";
                 $tree[$factory['id']]['children'][$unit['id']]['level'] = 1;
                 $tree[$factory['id']]['children'][$unit['id']]['children'] = $tree[$factory['id']]['children'][$unit['id']]['children'] ?? [];
@@ -147,22 +150,22 @@ class Change extends Model
 
     public function change_status()
     {
-        return $this->belongsTo('Framework\Models\ChangeStatus', 'status_id');
+        return $this->belongsTo(ChangeStatus::class, 'status_id');
     }
 
     public function approver()
     {
-        return $this->belongsTo('Framework\User', 'approver_id');
+        return $this->belongsTo(User::class, 'approver_id');
     }
 
     public function assignee()
     {
-        return $this->belongsTo('Framework\User', 'assignee_id');
+        return $this->belongsTo(User::class, 'assignee_id');
     }
 
     public function system()
     {
-        return $this->belongsTo('Framework\Models\System', 'system');
+        return $this->belongsTo(System::class, 'system');
     }
 
     /*

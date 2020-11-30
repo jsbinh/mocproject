@@ -26,7 +26,6 @@ Route::get('/test', function() {
     \Log::info('Hello', ['world']);
     throw new \Exception('my error', 400);
     $result = DB::table('config')->where('name', 'default_filter')->first();
-    dd(json_decode($result->value, true));
 });
 
 Auth::routes(['verify' => true]);

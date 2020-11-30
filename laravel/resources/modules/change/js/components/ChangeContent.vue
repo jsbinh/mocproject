@@ -46,7 +46,6 @@
                             :error-messages="factoryErrors"
                             label="Factory"
                             required
-
                             outlined
                             @change="generateChangeId()"
                             @blur="$v.factory && $v.factory.$touch()"
@@ -61,7 +60,6 @@
                             :error-messages="unitErrors"
                             label="Unit"
                             required
-
                             outlined
                             @blur="$v.unit && $v.unit.$touch()"
                             @change="generateChangeId()"
@@ -77,7 +75,6 @@
                             label="System"
                             required
                             outlined
-
                             @change="generateChangeId()"
                             @blur="$v.system && $v.system.$touch()"
                         ></v-select>
@@ -108,7 +105,6 @@
                             :counter="255"
                             label="Title"
                             required
-
                             @input="$v.title && $v.title.$touch()"
                             @blur="$v.title && $v.title.$touch()"
                             outlined>
@@ -460,7 +456,7 @@
                                     rounded
                                     color="blue-grey"
                                     class="ma-2 white--text"
-                                    :href="viewDetailReport(item)"
+                                    :href="reportLink"
                                 >
                                     View Details
                                     <!-- <v-icon right dark>mdi-cloud-download</v-icon> -->
@@ -533,7 +529,8 @@
         comments: [],
         statusNext: '',
         commentText: '',
-        inputComment: ''
+        inputComment: '',
+        status_id: ''
     };
 
     var month = new Date();
@@ -693,8 +690,9 @@
                         let linkTags = [`factory=${meta.factory}`];
                         if (meta.unit) linkTags.push(`unit=${meta.unit}`);
                         if (meta.system) linkTags.push(`system=${meta.system}`);
+                        if (meta.status_id) linkTags.push(`status=${meta.status_id}`);
                         this.reportLink = `${baseRoute}/change?${linkTags.join('&')}`;
-                        // console.log('@@@ linkTags @@@', linkTags, this.reportLink);
+                        console.log('@@@ linkTags @@@', linkTags, this.reportLink);
                         this.loadReport(meta);
                         this.context = 'report';
                     }
@@ -879,7 +877,7 @@
                     );
             },
             viewDetailReport(item) {
-                axios
+                /*axios
                     .get(`${baseRoute}/web/view-detail-report?factory=${item.factory}&unit=${item.unit}&system=${item.system}&status_name=${item.id}`)
                     .then(
                         response => {
@@ -891,7 +889,8 @@
                     )
                     .then(
                         () => void(0)
-                    );
+                    );*/
+
             },
             loadReport(meta) {
                 axios
@@ -911,8 +910,6 @@
                 );
             },
             submit(e, status = null, is_approve) {
-                console.log('id', this.id);
-
                 this.$v.$touch();
 
                 if (this.$v.$error) return alert("Error! Please check the form.");
@@ -929,6 +926,7 @@
                         this.id = response.data.id;
                         this.loadData(this.id);
                         this.showSuccess();
+                        location.reload();
                     }
                 )
                 .catch(

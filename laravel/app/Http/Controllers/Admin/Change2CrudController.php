@@ -180,7 +180,7 @@ class Change2CrudController extends ChangeCrudController
 
             if($change->status_id){
                 $email = User::query()
-                    ->where('status_id', $change->status_id + 1)
+                    ->where('status_id', $change->status_id)
                     ->value('email');
 
                 $created_email = User::query()->where('id', $change->created_by_id)->value('email');
@@ -209,16 +209,13 @@ class Change2CrudController extends ChangeCrudController
                 }
             }
 
-            if($user->status_id == $change->status_id){
+            if(empty($id) || $user->status_id == $change->status_id){
                 $nextStatus = Arr::get($request, 'statusNext');
                 if($nextStatus){
                     $change->status_id = $nextStatus;
                 }else{
                     $change->status_id = $change->status_id + 1;
                 }
-            }
-
-            if(empty($id) || $user->status_id == $change->status_id){
                 // save to db
                 $result = $change->save();
             }else{
@@ -231,7 +228,6 @@ class Change2CrudController extends ChangeCrudController
             $comment->user_id = $user->id;
             $comment->content = $inputComment;
             $comment->save();
-
 
 
                 /*if(empty($id)){
@@ -297,13 +293,13 @@ class Change2CrudController extends ChangeCrudController
     {
         $statuses = (new ChangeStatus)->get()->toArray();
 
-        $fac_id = $factory = intval($request->input('factory'));
+        $fac_id = $factory = (int)$request->input('factory');
         $where = ['factory'];
 
-        $unit_id = $unit = intval($request->input('unit'));
+        $unit_id = $unit = (int)$request->input('unit');
         if ($unit) $where[] = 'unit';
 
-        $system_id = $system = intval($request->input('system'));
+        $system_id = $system = (int)$request->input('system');
         if ($system) $where[] = 'system';
 
         $where = compact(...$where);
@@ -331,46 +327,32 @@ class Change2CrudController extends ChangeCrudController
         }
 
         $groupMaps = [
-            'Initiated' => [
-                'Draft',
-                'Open'
+            'Initial' => [
+                'Initial',
             ],
-            'Screeening' => [
-                'Screening progress',
-                'Screening approved',
-                'Screening not approved'
+            'Screening' => [
+                'Screening',
             ],
             'Design' => [
-                'Design progress'
+                'Design'
             ],
             'Design Review/Approve' => [
-                'Waiting for technical reviewal',
-                'Technical reviewal progress',
-                'Technical reviewed ok',
-                'Technical reviewed not ok'
+                'Design Review/Approve'
             ],
             'Implement' => [
-                'Implementation progress'
+                'Implement'
             ],
             'Implement Review/Approve' => [
-                'Waiting for manager approval',
-                'Manager approval progress',
-                'Manager approved',
-                'Manager not approved'
+                'Implement Review/Approve',
             ],
             'Closeout' => [
-                'Update documents progress',
-                'Close out',
-                'Close out progress',
+                'Closeout',
             ],
             'Closeout Review/Approve' => [
-                'Close out not approved',
-                'Close out approved',
+                'Closeout Review/Approve',
             ],
             'Closed/Cancelled' => [
-                'Cancel progress',
-                'Cancelled',
-                'Closed'
+                'Closed/Cancelled'
             ]
         ];
 
@@ -396,10 +378,10 @@ class Change2CrudController extends ChangeCrudController
         }
 
         // sort
-        usort($finalResult, function ($a, $b) {
+        /*usort($finalResult, function ($a, $b) {
             if ($a['total'] == $b['total']) return 0;
             return ($a['total'] > $b['total']) ? -1 : 1;
-        });
+        });*/
 
         // navigation
         $navigation = [

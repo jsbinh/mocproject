@@ -264,7 +264,7 @@
                         <v-btn v-if="status==''" class="mr-1" @click="submit">{{id ? "update" : "create"}}</v-btn>
                         <v-btn v-if="status==''" @click="clear">clear</v-btn>
                     </v-col>
-                    <v-col cols="8" class="text-sm-right" v-if="status != 'Closed' || status != 'Cancelled' || status != null">
+                    <v-col cols="8" class="text-sm-right" v-if="(status != 'Closed' || status != 'Cancelled' || status != null) && this.actionBtn==1">
                         <v-btn class="primary" @click="e => submit(e, 2, 1)" v-if="id != null">Submit</v-btn>
                         <!-- <v-btn class="mr-1 primary" @click="submit">Screening approved</v-btn>
                         <v-btn class="error" @click="clear">Screening not approved</v-btn> -->
@@ -586,6 +586,7 @@
 
             context: 'change',
             activeTab: 0,
+            actionBtn: 0,
             factoryItems: [],
             unitItems: [],
             systemItems: [],
@@ -651,6 +652,9 @@
                     this.id = newValue.id;
                     this.loadData(newValue.id);
                     this.context = 'change';
+                    this.actionBtn = 1;
+
+                    console.log('actionBtn', this.actionBtn);
                     /*else {
                         this.reportChart = [];
                         this.reportChartNavigation = [];
@@ -674,11 +678,13 @@
                 if (newValue && newValue != oldValue) {
                     console.log('@@@ node changed @@@', newValue);
 
+                    this.actionBtn = 0;
+                    console.log('actionBtn', this.actionBtn);
+
                     if (newValue.level === 3) {
                         this.loadData(newValue.id);
                         this.context = 'change';
-                    }
-                    else {
+                    }else {
                         this.reportChart = [];
                         this.reportChartNavigation = [];
                         const splits = _.split(newValue.id, '_');

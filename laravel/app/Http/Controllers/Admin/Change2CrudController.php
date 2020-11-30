@@ -180,11 +180,10 @@ class Change2CrudController extends ChangeCrudController
 
             if($change->status_id){
                 $email = User::query()
-                    ->where('status_id', $change->status_id)
+                    ->where('status_id', $change->status_id + 1)
                     ->value('email');
 
                 $created_email = User::query()->where('id', $change->created_by_id)->value('email');
-
                 Mail::send(
                     'assignee-mail',
                     [

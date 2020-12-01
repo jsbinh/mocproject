@@ -54,9 +54,9 @@
                     <template v-slot:prepend="{ item }">
                         <v-icon v-text="'mdi-checkbox-blank-circle'" :color="item.color" v-if="item.level === 3">
                         </v-icon>
-                        <v-img light width="30" src="baseRoute/factory.jpg" v-if="item.level === 0"></v-img>
-                        <v-img light src="/app/unit.jpg" v-if="item.level === 1"></v-img>
-                        <v-img light src="/app/system.jpg" v-if="item.level === 2"></v-img>
+                        <v-img light width="30" src="../factory.jpg" v-if="item.level === 0"></v-img>
+                        <v-img light width="30" src="../unit.jpg" v-if="item.level === 1"></v-img>
+                        <v-img light width="30" src="../system.jpg" v-if="item.level === 2"></v-img>
                     </template>
                 </v-treeview>
             </v-card-text>

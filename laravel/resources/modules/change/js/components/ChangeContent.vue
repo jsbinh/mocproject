@@ -266,8 +266,6 @@
                     </v-col>
                     <v-col cols="8" class="text-sm-right" v-if="(status != 'Closed' || status != 'Cancelled' || status != null) && this.actionBtn==1">
                         <v-btn class="primary" @click="e => submit(e, 2, 1)" v-if="id != null">Submit</v-btn>
-                        <!-- <v-btn class="mr-1 primary" @click="submit">Screening approved</v-btn>
-                        <v-btn class="error" @click="clear">Screening not approved</v-btn> -->
 
                         <v-btn class="mr-1 primary" v-for="(item, index) in allowedStatuses"
                             :key="index"

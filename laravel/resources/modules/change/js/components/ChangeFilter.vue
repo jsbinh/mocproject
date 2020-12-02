@@ -58,6 +58,11 @@
                         <v-img light width="30" src="../unit.jpg" v-if="item.level === 1"></v-img>
                         <v-img light width="30" src="../system.jpg" v-if="item.level === 2"></v-img>
                     </template>
+                    <template slot="append" slot-scope="{ item }">
+                        <v-btn rounded small v-if="item.level === 2" @click="e => newChange(e, item)" title="Create a new change">
+                            <v-icon left>mdi-plus-circle</v-icon> New Change
+                        </v-btn>
+                    </template>
                 </v-treeview>
             </v-card-text>
         </v-card>

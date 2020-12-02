@@ -202,10 +202,10 @@ class Change2CrudController extends ChangeCrudController
                 $change->status_id = 1; // Draft
                 $change->color = Change::COLOR_DEFAULT;
                 $change->created_by_id = backpack_user()->id;
-            }else{
-                if($change->status_id == 2){
-                    $change->color = $color;
-                }
+            }
+
+            if($change->status_id == 2){
+                $change->color = $color;
             }
 
             if(empty($id) || $user->status_id == $change->status_id){
@@ -215,6 +215,7 @@ class Change2CrudController extends ChangeCrudController
                 }else{
                     $change->status_id = $change->status_id + 1;
                 }
+
                 // save to db
                 $result = $change->save();
             }else{

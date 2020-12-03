@@ -198,15 +198,13 @@ class Change2CrudController extends ChangeCrudController
                 }
 
                 if(!empty($email)){
-                    $created_email = User::query()->where('id', $change->created_by_id)->value('email');
                     Mail::send(
                         'assignee-mail',
                         [
                             'change_id' => $change->change_id,
                             'id'        => $change->id
                         ],
-                        function ($message) use($change, $email, $created_email) {
-
+                        function ($message) use($change, $email) {
                             $message->to($email)
                                 ->subject("[Change #{$change->change_id}] " . ('Change Notification'));
                         }
@@ -221,7 +219,6 @@ class Change2CrudController extends ChangeCrudController
                             'id'        => $change->id
                         ],
                         function ($message) use($change, $emailOwner) {
-
                             $message->to($emailOwner)
                                 ->subject("[Change #{$change->change_id}] " . ('Change Notification'));
                         }

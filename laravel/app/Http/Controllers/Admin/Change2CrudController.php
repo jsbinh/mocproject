@@ -177,10 +177,17 @@ class Change2CrudController extends ChangeCrudController
                 }*/
 
             $user = backpack_user();
+            $nextStatus = Arr::get($request, 'statusNext');
 
             if($change->status_id){
+                if($nextStatus){
+                    $statusSendEmail = $nextStatus;
+                }else{
+                    $statusSendEmail = $change->status_id + 1;
+                }
+
                 $email = User::query()
-                    ->where('status_id', $change->status_id + 1)
+                    ->where('status_id', $statusSendEmail)
                     ->value('email');
 
                 $created_email = User::query()->where('id', $change->created_by_id)->value('email');
@@ -209,7 +216,6 @@ class Change2CrudController extends ChangeCrudController
             }
 
             if(empty($id) || $user->status_id == $change->status_id){
-                $nextStatus = Arr::get($request, 'statusNext');
                 if($nextStatus){
                     $change->status_id = $nextStatus;
                 }else{

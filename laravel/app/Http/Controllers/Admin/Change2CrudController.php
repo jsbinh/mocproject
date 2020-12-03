@@ -190,6 +190,12 @@ class Change2CrudController extends ChangeCrudController
                     ->where('status_id', $statusSendEmail)
                     ->value('email');
 
+                if(empty($email)){
+                    $emailOWner = User::query()
+                        ->where('status_id', $change->created_by_id)
+                        ->value('email');
+                }
+
                 if(!empty($email)){
                     $created_email = User::query()->where('id', $change->created_by_id)->value('email');
                     Mail::send(
@@ -201,6 +207,21 @@ class Change2CrudController extends ChangeCrudController
                         function ($message) use($change, $email, $created_email) {
 
                             $message->to($email)
+                                ->subject("[Change #{$change->change_id}] " . ('Change Notification'));
+                        }
+                    );
+                }
+
+                if(!empty($emailOWner)){
+                    Mail::send(
+                        'send-email-owner',
+                        [
+                            'change_id' => $change->change_id,
+                            'id'        => $change->id
+                        ],
+                        function ($message) use($change, $emailOWner) {
+
+                            $message->to($emailOWner)
                                 ->subject("[Change #{$change->change_id}] " . ('Change Notification'));
                         }
                     );

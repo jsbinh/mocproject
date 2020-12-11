@@ -14,10 +14,10 @@
         </v-btn>
         <v-row align="start" justify="space-between">
             <v-col cols="12" md="3" sm="12" v-if="!filterHidden">
-                <ChangeFilter :onAdd="closeFilter" />
+                <ChangeFilter :onAdd="closeFilter" :onChange="generateChangeId"  />
             </v-col>
             <v-col cols="12" :md="filterHidden ? 12 : 9" sm="12">
-                <ChangeContent/>
+                <ChangeContent :dataChangeId="dataChangeId" :onChange="generateChangeId"/>
             </v-col>
         </v-row>
     </v-app>
@@ -34,6 +34,7 @@ export default {
     },
     data: () => ({
         filterHidden: false,
+        dataChangeId: false
     }),
     methods: {
         toggle() {
@@ -41,6 +42,9 @@ export default {
         },
         closeFilter() {
             this.filterHidden = true;
+        },
+        generateChangeId(value) {
+            this.dataChangeId = value;
         }
     }
 }

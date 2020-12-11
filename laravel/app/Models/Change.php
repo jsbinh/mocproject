@@ -28,6 +28,7 @@ class Change extends Model
     // protected $dates = [];
 
     const COLOR_DEFAULT = 'grey';
+    public const STATUS_CLOSED = 9;
 
     public function getTreeOfChanges()
     {
@@ -165,7 +166,7 @@ class Change extends Model
 
     public function system()
     {
-        return $this->belongsTo(System::class, 'system');
+        return $this->belongsTo(System::class);
     }
 
     /*

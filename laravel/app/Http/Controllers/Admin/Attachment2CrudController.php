@@ -42,16 +42,18 @@ class Attachment2CrudController extends AttachmentCrudController
 
     public function download(Request $request, string $id = null)
     {
-        $path = $request->input('path');
+        try{
+            $path = $request->input('path');
+            $attachment = Attachment::query()->find($id);
+            if ($attachment) {
+                return Storage::download($attachment->path, $attachment->name);
+            }
 
-        $attachment = new Attachment;
-        $attachment = $attachment->find($id);
-
-        if ($attachment) {
-            return Storage::download($attachment->path, $attachment->name);
+            return 'Can not find file!';
+//            return Storage::download($path);
+        }catch (\Exception $e){
+            return 'Can not find file! Please check again!';
         }
-
-        return Storage::download($path);
     }
 
     public function remove(Request $request, string $id)

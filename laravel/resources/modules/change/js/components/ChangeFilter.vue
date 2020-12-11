@@ -76,7 +76,7 @@
 
     export default {
         name: "ChangeFilter",
-        props: ['onAdd'],
+        props: ['onAdd', 'onChange'],
         data: () => ({
             items: undefined,
             // open: [1, 2],
@@ -115,6 +115,7 @@
                     await setTimeout(() => null, 700);
                     dispatch('toggleButtonNewChange', {clicked: false, meta: null});
                     this.onAdd();
+                    this.onChange(true);
                 },
             }),
             loadData() {

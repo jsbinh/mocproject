@@ -568,12 +568,7 @@
             }
         },
 
-        // props: {
-        //     "template": {
-        //         type: Boolean,
-        //         default: false
-        //     }
-        // },
+        props: ["onChange", "dataChangeId"],
 
         data: () => ({
             ...defaultData,
@@ -623,6 +618,7 @@
         mounted() {
             // load select options
             ['factory', 'unit', 'system'].forEach(item => {
+                this.generateChangeId();
                 console.log(item);
                 axios
                 .get(`${baseRoute}/web/change/select-items/${item}`)
@@ -637,6 +633,9 @@
                 );
             })
 
+            this.generateChangeId();
+
+
             let id = utils.findGetParameter('id');
             if (id) {
                 this.loadData(id);
@@ -644,6 +643,12 @@
         },
 
         watch: {
+            dataChangeId: function (newValue, oldValue) {
+                if(newValue == true){
+                    this.onChange(false);
+                    this.generateChangeId();
+                }
+            },
             selectedNodeTask: function (newValue, oldValue) {
                 if (newValue && newValue != oldValue) {
                     console.log('@@@ node task changed @@@', newValue);
@@ -652,24 +657,6 @@
                     this.context = 'change';
                     this.actionBtn = 1;
 
-                    console.log('actionBtn', this.actionBtn);
-                    /*else {
-                        this.reportChart = [];
-                        this.reportChartNavigation = [];
-                        const splits = _.split(newValue.id, '_');
-                        const meta = {
-                            factory: splits[1] >> 0,
-                            unit: splits[3] >> 0,
-                            system: splits[5] >> 0
-                        };
-                        let linkTags = [`factory=${meta.factory}`];
-                        if (meta.unit) linkTags.push(`unit=${meta.unit}`);
-                        if (meta.system) linkTags.push(`system=${meta.system}`);
-                        this.reportLink = `${baseRoute}/change?${linkTags.join('&')}`;
-                        // console.log('@@@ linkTags @@@', linkTags, this.reportLink);
-                        this.loadReport(meta);
-                        this.context = 'report';
-                    }*/
                 }
             },
             selectedNode: function (newValue, oldValue) {

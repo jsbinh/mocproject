@@ -23,6 +23,7 @@ class System extends Model
     // protected $hidden = [];
     // protected $dates = [];
 
+
     /*
     |--------------------------------------------------------------------------
     | FUNCTIONS

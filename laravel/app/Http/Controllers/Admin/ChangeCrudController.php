@@ -5,6 +5,8 @@ namespace Framework\Http\Controllers\Admin;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 use Framework\Http\Requests\ChangeRequest;
+use Framework\Models\Change;
+use Framework\Models\System;
 
 /**
  * Class ChangeCrudController
@@ -27,10 +29,9 @@ class ChangeCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\Framework\Models\Change::class);
+        CRUD::setModel(Change::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/change');
         CRUD::setEntityNameStrings('change', 'changes');
-
     }
 
     /**
@@ -283,7 +284,7 @@ class ChangeCrudController extends CrudController
             'type' => 'select2',
             'label'=> 'System',
         ], function () {
-            return \Framework\Models\System::all()->keyBy('id')->pluck('name', 'id')->toArray();
+            return System::all()->keyBy('id')->pluck('name', 'id')->toArray();
         }, function ($value) { // if the filter is active
             $this->crud->addClause('where', 'system', $value);
         });

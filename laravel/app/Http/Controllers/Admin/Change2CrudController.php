@@ -244,19 +244,41 @@ class Change2CrudController extends ChangeCrudController
                         $change->status_id = $change->status_id + 1;
                     }
                 }
-
                 // save to db
                 $result = $change->save();
             }else{
                 $result = false;
             }
 
+            if($nextStatus == Change::STATUS_CLOSED){
+                $allEmail = User::query()
+                    ->orderBy('id')
+                    ->pluck('email');
+
+                $allEmail = $allEmail->toArray();
+                if(!empty($allEmail)){
+                    Mail::send(
+                        'all-email',
+                        [
+                            'change_id' => $change->change_id,
+                            'id'        => $change->id
+                        ],
+                        function ($message) use($change, $allEmail) {
+                            $message->to($allEmail)
+                                ->subject("[Change #{$change->change_id}] " . ('Change Notification'));
+                        }
+                    );
+                }
+            }
+
             $inputComment = Arr::get($request, 'commentText');
-            $comment = new Comment();
-            $comment->change_id = $change->id;
-            $comment->user_id = $user->id;
-            $comment->content = $inputComment;
-            $comment->save();
+            if(!empty($inputComment)){
+                $comment = new Comment();
+                $comment->change_id = $change->id;
+                $comment->user_id = $user->id;
+                $comment->content = $inputComment;
+                $comment->save();
+            }
 
 
                 /*if(empty($id)){

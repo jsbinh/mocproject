@@ -454,6 +454,7 @@
                                     rounded
                                     color="blue-grey"
                                     class="ma-2 white--text"
+                                    id="select_status"
                                     :href="reportLink"
                                 >
                                     View Details
@@ -510,7 +511,7 @@
     const defaultData = {
         id: null,
         change_id: null,
-        status: '',
+        status: 'Initial',
         factory: null,
         unit: null,
         system: null,
@@ -590,6 +591,7 @@
             reportChart: [],
             reportChartNavigation: [],
             reportLink: '',
+            status_id_select: '',
             priorityLevels: [
                 { text: 'High', value: 'red' },
                 { text: 'Medium', value: 'orange' },
@@ -673,10 +675,12 @@
                         this.reportChart = [];
                         this.reportChartNavigation = [];
                         const splits = _.split(newValue.id, '_');
+                        console.log(splits);
                         const meta = {
                             factory: splits[1] >> 0,
                             unit: splits[3] >> 0,
-                            system: splits[5] >> 0
+                            system: splits[5] >> 0,
+                            status_id: this.status_id_select,
                         };
                         let linkTags = [`factory=${meta.factory}`];
                         if (meta.unit) linkTags.push(`unit=${meta.unit}`);
@@ -827,6 +831,12 @@
 
                 this.inputComment = null
             },
+
+
+            reportLinkDetail: function (item, i) {
+                this.status_id_select = i + 1;
+            },
+
 
             loadData(id) {
                 this.clear();

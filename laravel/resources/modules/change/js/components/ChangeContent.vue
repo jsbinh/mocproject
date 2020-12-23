@@ -2,7 +2,7 @@
     <v-card>
         <v-card-text v-if="context == 'change'">
             <v-tabs light @change="onChangeTab">
-                <v-tab>{{status}}</v-tab>
+                <v-tab>{{statusValue > 0 ? status : 'Initial'}}</v-tab>
                 <v-tab>History</v-tab>
                 <v-tab>Attachment List</v-tab>
                 <!-- <v-tab>History</v-tab> -->

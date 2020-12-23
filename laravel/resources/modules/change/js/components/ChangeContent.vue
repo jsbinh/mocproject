@@ -511,7 +511,7 @@
     const defaultData = {
         id: null,
         change_id: null,
-        status: 'Initial',
+        status: '',
         factory: null,
         unit: null,
         system: null,
